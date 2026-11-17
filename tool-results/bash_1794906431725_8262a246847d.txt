@@ -1,0 +1,301 @@
+function legalS hel l(title, sub, body) {
+ return crum bs([{ labe l: "Home", hre f: "#/" }, { label : "Informat ive e reg ole" }, { la bel: title }] ) +
+ '<div class="container" ><div class="legal- body" >' +
+ '<div class=" section- hea d" sty le="pa dding-top: 22px "><div ><h1>' + e sc(title) + "</h1>" + ( sub ? ' <p cla ss=" sub" >' + e sc(sub) + " </p>" : " ") + " </ div ></div>" +
+ LEGAL_NOTE + body + " </div></ div >";
+}
+function vie wPrivacy( ) {
+ const body =
+ "<h2>1. Titolare del trattamento</h2><p>Prototipo: <i>[ da de finire — società o pe rsona fisica che ge stirà il se rvizio, con reca piti com pleti] </i>. In questa istanza dimostrativa ne ssun dato l asc ia il tuo brow ser: t utto è salv ato ne l <code>localStorage </code> l ocale e non v iene inv iato a d alcun serve r.</ p>" +
+ "<h2>2. Qua li dat i raccogliam o (minimizzazione) </ h2>" +
+ "<ul ><li><b>Account</ b>: indirizzo email ( verificato), pse udonimo pubblico, ha sh del la pa ssword, im postazioni (incl uso il segreto 2FA cifrat o/protetto). Nessun cog nome o ide ntità lega le è richiest o pe r recensire.</l i>" +
+ "<li><b>E spe rie nze e recensioni</ b>: il contenuto che pubblichi; il docume nto caricato pe r la verifica è accessibile sol o alla moderaz ione, con tempi di conservazione limitati ( si sugge risce: cancellazione dopo la decisione, conse rvazione dell'e sito).</l i>" +
+ "<li><b>I nterazioni tec niche </b>: eve nti di sicurezza e di moderazione (IP, ora rio, tipo di eve nto) per prev enire abusi — con accesso limitato a i ruol i autorizzati.</ li>" +
+ "<li><b>Posizione sulla ma ppa </ b>: l a geol ocalizzazione vie ne richie sta solo qua ndo premi t u il pul sa nte \"GPS\"; le coordinate se rvono unicamente a calcola re la zona più vicina e ve ngono poi scartate. Di que lla interazione resta solta nto la zona scelta, memorizzata come pre ferenza tecnica sul tuo dispositiv o (rimovibile in ogni mome nto da ll'ele nco \" La tua zona…\" sulla ma ppa), mai a ssociata all'account.</ li>" +
+ "<li><b>P ubblicame nte</ b>: most riamo sol o pse udonimo, categoria, mese/a nno di pubblicazione e contenuto della rece nsione. Ema il, telefono e ide ntità lega li non sono ma i esposti, né sul la mappa né sulle sc hede. </li></ul>" +
+ "<h2>3. Finalità e basi g iuridiche ( da confe rmare con il leg ale) </h2>" +
+ "<ul ><li>Fornitura de l servizio e autent icazione: intere sse contrattua le/ necessità di servizio. </li>" +
+ "<li>P reve nzione abusi e moderazione : inte resse leg ittimo, con misure di proporzionalità. </li>" +
+ "<li>Statistic he e pubblicità: <b>sol o conse nso</ b>, revocabile, mai condiz ione d' uso de l sit o.</l i></ul>" +
+ "<h2>4. Conservazione</ h2><p>Tem pi indicativi da validare : account attivo finché l'ute nte non chiede l a cancellazione ; log di sicurezza e moderazione con conse rvazione limitata e de finitiva da definire; docume nti di verifica cancel lati dopo la decisio ne.</ p>" +
+ "<h2>5. I tuoi diritti</ h2><p>Accesso, rettifica, cancellazione, limitazione, opposizione, porta bil ità: da l profil o puoi e sporta re i tuoi dat i in formato legg ibile e ric hie dere la ca ncellazione dell'account; le richieste ve ngono ge stite e ntro i te rmi ni appl icabil i. Per la versione di produzione sa rà disponibile un canale de dicato (priv acy@…). </p>" +
+ "<h2>6. Comunicazione a terzi e cookie </h2><p>I cookie non esse nziali ( statistici e pubblicita ri, incl uso Google A dSe nse ) sono caricati solo dopo conse nso e spl icito, rev ocabile in ogni mome nto da lla voce \"P refe renze cookie\ " nel piè di pagina. Ne ssun dato v iene ve ndut o. I trasfe rime nti event uali ve rso fornitori extra-UE a ndra nno val utati con cla usole e gara nzie a deg uate.</ p>" +
+ "<h2>7. Sicurezza </h2><p>M isure tecniche e organizzative: minimizzazione, ruol i e pe rmessi minimi, cifratura de l tra sporto (H TTPS), pa ssword con ha sh resiste nti, 2FA disponibile (c onsigl iata) e obbl igatoria per l o staff, limiti di fre que nza, log rise rvati, back up protetti. Ne ssuna gara nz ia di imm unità: le ve rifiche periodiche e la risposta agli incide nti fa nno pa rte del met odo.</ p>";
+ return { title: "Privacy", html: legalS hell ("Informativa priv acy", "Trattament o dei dati personali — m ode llo da val ida re professiona lmente", body) };
+}
+function vie wCook ie() {
+ const body =
+ "<h2>Categorie di cookie usati</h2>" +
+ '<div class="table-wra p" ><table cla ss="ta ble" ><thea d><tr><t h scope ="col ">Categoria </th><th sc ope ="col ">A cosa serve </th><th scope ="col">Serve il conse nso?</th></tr></t head><tbody >' +
+ "<tr><td><b>Tecnici</b></td><t d>Sessione, sicurezza, prefe re nze essenzia li (incl uso il ricordo di que sta scelta sui cookie e della zona di riferiment o sulla ma ppa ).</td><td>No, sono necessari.</t d></tr>" +
+ "<tr><td><b>Statistici</ b></td><td>Statist iche agg regate di util izzo pe r migliora re il serv izio. </td><t d>S ì, facoltativo.</t d></tr>" +
+ "<tr><td><b>Profilazione pubblicita ria </b></td><t d>G oog le AdSense, pe r most rare a nnunci pe rtinenti ( quando la pubblicità è at tiva). </td><t d>Sì, facoltativo.</t d></tr>" +
+ "</tbody ></ta ble ></ div >" +
+ "<h2>Come si manife sta il conse nso</h2><p>Al prim o arrivo mostriamo un avv iso con tre opzioni equiv alent i: <b>accetta tutti</ b>, <b>rifiuta i non esse nziali</ b>, <b>pe rsona lizza</ b>. Scorrire la pagina, nav igare o chiude re l'avv iso <b>non</b> costituisce conse nso: i cookie non essenziali resta no spe nti finché non scegli. La scelta è rev ocabil e o modificabile in og ni mome nto da l collegame nto \ "Prefe re nze cookie\" ne l piè di pagina, con e ffetto immediat o.</ p>" +
+ "<h2>Disattivazione della pubblicità</ h2><p>La piattaforma può funzionare inte ramente senza pubblicità: l' integ razione A dSense è opzionale e coma ndata da un'a pposita impostazione del l'area amministrativ a. Qua ndo attiva, il com ponente pubblicitario v iene caricato solo dopo il consenso; gli a nnunci sono etichettati e tenuti sepa rati da recensioni, risultati e cla ssific he, e no n ne infl uenza no l' ordine.</ p>" +
+ "<h2>Ge stione dai browse r</ h2><p>Puoi inoltre bloccare o el iminare i cookie dal le impostazioni de l brow ser. Il bl occo de i cook ie tecnici può com promettere l'accesso e il salv ataggio dell e prefe renze.</p>";
+ return { title: "Cookie ", html: lega lShell( "Cook ie policy", "Cosa insta lliam o, come chiediamo il consenso, come lo revoci", body) } ;
+}
+function vie wTerms() {
+ const body =
+ "<h2>1. Oggetto</h2><p>ZoomZoom è un portale indipe nde nte di <b>recensioni ve rificate</ b> su immobil i, zone, proprietari, affittua ri, amministratori di condom inio, agenzie e ditte/ profe ssionisti del settore. <b>Non</ b> è un portale di comprave ndita o affitto: non pubbl ica annunci, non gestisce appuntame nti, pre notazioni o me ssagg istica non offre servizi a pa gament o in que sta versione. </ p>" +
+ "<h2>2. Account </ h2><p>La registrazione richie de la ve rifica del l'indirizzo ema il; sono disponibil i l'accesso con crede nzial i proprie e ( in produzione) opziona lmente G oogle OA uth, oltre all'a utenticazione a due fattori (TOTP), consigl iata a tutti e ob bl igatoria pe r lo staff. Sei re sponsa bile della ve ridicità de i dati fornit i del la riservatezza delle t ue crede nzial i.</ p>" +
+ "<h2>3. Condotta vietata </h2><ul ><l i>pubblicare conte nuti c he non derivano da un'e sperienza diretta ve rificata;</ li><l i>inser ire dati pe rsonali di terzi senza a utorizzazione (nomi completi, telefoni, indirizzi privati) ;</ li><l i>insulti, minacce, diffamaz ione, discriminazione, incitament o all'odio;</ li><l i>fal sità manife ste, spam, finalità prom ozional i o conc orrenza sleale; </ l i><li>te ntativi di manipola re puntegg i o classifiche, incl usi account m ultipli; </l i><li>v iola re diritti di terzi, incluso il diritto d'a utore. </li></ul>" +
+ "<h2>4. Conte nuti degli utent i</ h2><p>Re sti titola re delle tue recensioni: conce di alla piattaforma una licenza non escl usiva , grat uita e mondia le pe r pubbl icarle nel se rvizio (e rimuoverle su richiesta o pe r decisione di moderazione). Le opinioni e spre sse dagli utent i non rifl ettono la posizione della piattaforma. </p>" +
+ "<h2>5. Mode razione</h2><p>Le seg nalaz ioni e le contestazioni seg uono il procedimento de scritto nella pagina <a hre f=\"#/mode razione\" >Moderazione</a >: nessuna rimozione utomatica al semplice arrivo di una contestazione, decisioni tracciate, appell o p ossibile. </p>" +
+ "<h2>6. Limitazioni di responsabilità </h2><p>Il servizio è offerto \ "così com'è\": la piattaforma non gara ntisce l'accuratezza del le opinioni degli utenti e non fornisce consul enza lega le, fiscale o tecnic a. Quest o prototipo usa dati fittizi.</ p>" +
+ "<h2>7. Legge a ppl icabile</ h2><p>Da de finirsi con la revisione lega le; l'im postazione prev ista è la legg e italia na, con foro da stabilire.</ p>";
+ return { title: "Te rmini d' uso", html : legalS hell ("Term ini d' uso", "Le regole per usare il servizio", body) } ;
+}
+function vie wRevie wR ules() {
+ const body =
+ "<h2>Chi può recensire </ h2><p>Solo ute nti a utenticati con un'<b>esperienza registrata</b> sulla piattaforma: o ha i ricev uto u n invit o email col legato a un'interazione, o la tua e spe rie nza è stata verificata docume ntalme nte dal la mode razione. Il ba dge \"e sperie nza verificata\" indica e sattamente que sto — l'e sistenza de ll'e spe rie nza — non l a veridicità di og ni a ffe rmazione.</ p>" +
+ "<h2>Le regole in dieci punti</ h2><ol >" +
+ "<li>Racconta sol o <b>e spe rie nze dirette</b>, verificate con il metodo de lla piattaforma.</ li>" +
+ "<li><b>Una recensione per e spe rie nza</ b>: la ste ssa e sperie nza non si v ota due volte. </li>" +
+ "<li>Nie nte <b>dati personal i di terzi</ b>: se nza nomi com pleti, telefoni, email, indirizzi privat i o docume nti.</l i>" +
+ "<li>Nie nte insulti, minacce, disc riminazione o l ing uagg io d'odio. </li>" +
+ "<li>Nie nte contenuti prom ozionali o de nig ratori pilotati da intere ssi: dic hia ra i conflitti d'intere sse. </li>" +
+ "<li>Attieniti ai fatti che puoi ave r vissuto; distingui chia ramente le opinioni.</ li>" +
+ "<li>Non usa re la rece nsione pe r ricatti, ric hie ste o trattative.</ li>" +
+ "<li>Aggiorna con l a <b>rettifica mot ivata</ b> se i fatti cambia no (e ntro " + DB().setting s.rettificaDay s + " g iorni in a utonomia; dopo, via mode razione). </li>" +
+ "<li>P uoi ca ncella re la tua rece nsione da l profilo in ogni moment o.</l i>" +
+ "<li>Le violazioni comportano la rimozione del contenuto e, nei ca si gra vi o ripetuti, la sospe nsione de ll'account, sempre co n decisione tracciata appel lo possibil e.</l i></ol>" +
+ "<h2>Cosa val utano le rece nsioni</h2><p>Og ni categoria ha crite ri propri ( da 0 a 10): per sempio un imm obile vie ne val utato su ma nute nzione, corrisponde nza con la descrizione e qualità degl i spazi; un'age nzia su com unicazione, traspare nza de i costi e ge stione della pratica. Il punte ggio complessiv o — da 0 a 10, con stelle — resta una t ua sinte si de ll'e spe rie nza.</ p>" ;
+ return { title: "Re gole delle recensioni", html: lega lShe ll(" Regole del le recensioni", "Cosa può e ntrare in una recensione e cosa no", body) } ;
+}
+function vie wMode ration( ) {
+ const body =
+ "<h2>Il flusso di una seg nalaz ione</ h2>" +
+ '<div class="table-wra p" ><table cla ss="ta ble" ><thea d><tr><t h scope ="col ">Stat o</t h><th scope ="col" >Sig nificato</th><t h scope ="col ">Tem pi indicativi</th></tr></t head><tbody >' +
+ "<tr><td><b>Ricev uta</ b></t d><td>La seg nalazione è in coda: ne ssuna azione aut omatica sulla recensione.</t d><td>— </t d></tr>" +
+ "<tr><td><b>In val utazione </b></td><t d>Un m ode ratore legge e raccogl ie eve ntual i eleme nti.</t d><td>e ntro 3 giorni</t d></t r>" +
+ "<tr><td><b>Decisa</ b></t d><td>Decisione motivata: ne ssuna azione, oscurame nto pa rziale, o nasc ondime nto con motiv o registrat o. </td><td>ent ro 7 g iorni</t d></tr>" +
+ "<tr><td><b>Appel lo</b></td><t d>Autore o segna latore può chiede re la rev isione.</t d><td>e ntro 15 g iorni dal la decisione </td></tr>" +
+ "<tr><td><b>Chiusa </ b></td><td>Esit o de finitiv o con m otivazione registrata ne l log rise rvato. </td><td>— </td></t r>" +
+ "</tbody ></ta ble ></ div >" +
+ "<h2>Reg ole di contenuto</h2><p>Le seg nalaz ioni ve rificate portano all'azione su: minacce e insulti; dati pe rsonali pubblicat i se nza aut orizzazione; conte nuti discriminatori; fal sità manife ste; spam e final ità promozionali; recensioni prive di esperienza pertine nte.</ p>" +
+ "<h2>Cosa non facciamo</h2><p><b>Nessuna ca ncellazione a utomatica</ b> pe r il sol o arrivo di una contestazione : og ni decisione pa ssa da una val utazione uma na, vie ne re gist rata in un <b>registro di moderazione accessibile solo a i ruoli a utorizzati</ b>, e resta a perto il diritto di a ppello. Gli a utori ricev ono comunicazione con il mot ivo. Le contestazioni sull'a ssociazione di una sc heda a una pe rsona seguono l o stesso procedime nto. </p>" +
+ "<h2>Traspare nza verso il pubbl ico</ h2><p>Qua ndo una rece nsione è na scosta, la sche da most ra che è avve nuta un'azione di mode razione ( se nza esporre i contenuti il leciti). Le statistiche aggregate e scludono i conte nuti na scosti. </p>";
+ return { title: "Mode razione", html: legalS hell ("Moderazione e conte stazioni", "Come decidiamo, con qua li tempi e gara nzie", body ) };
+}
+
+/* ---------------- Contatti ---------------- */
+function vie wContacts( ) {
+ const user = curre ntUse r();
+ const html =
+ crumbs([{ labe l: "Home", href: "#/" }, { la bel: "C ontatti" }] ) +
+ '<div class="container" ><div class="grid g rid- 2" style="ga p:26px; padding-top:22px" >' +
+ '<div ><h1 style ="ma rgin-top:0" >Contatti richieste </ h1>' +
+ '<p class=" sub" >Per richieste di accesso, rettifica o cancellazione dei dati, pe r conte stazioni sul l\'associazione di una sche da o per segnalazioni che richiedono un contatto diretto.</ p>' +
+ '<div class="card" ><form id="contact-form">' +
+ '<div class="fiel d" ><label for="ct-kind" >Tipo di ric hie sta</l abel ><se lect id="ct-kind" required>' +
+ '<option va lue ="ge neric">Doma nda gene rica</option>' +
+ '<option va lue =" privacy" >Richiesta privacy (accesso, rettifica, cancellaz ione) </option>' +
+ '<option va lue ="a ssociation" >Contestazione a ssociazione a persona/e ntità</ option>' +
+ '<option va lue ="content ">Seg nalaz ione conte nut i (non urge nte) </option></ select></ div >' +
+ '<div class="fiel d" ><label for="ct-email">Ema il di contatto</la bel ><input id="ct-email" ty pe="email" required v alue ="' + (user ? esc( use r.email) : "") + ' " place hol de r=" nome @e sempio.it" ><span cla ss=" hint">Non vie ne pubblicata. Per le richieste use remo que sto reca pito. </spa n></ div >' +
+ '<div class="fiel d" ><label for="ct-msg">Me ssa ggio</la bel ><textarea id="ct-msg" re quire d minlength=" 30" place hol der=" Desc rivi l a richiesta (a lmeno 30 caratteri)."></textarea ></div>' +
+ '<div class=" hp-fiel d" ><label for="ct-hp" >Non compilare </la bel ><input id="ct-hp" tabindex ="-1" autocom plete ="off"></ div >' +
+ '<button class="bt n bt n-primary " type =" submit" >Inv ia ric hie sta</ button></ form></ div ></ div>' +
+ '<div ><h2>R isposte e tempi</ h2>' +
+ "<p>Le richie ste privacy ricevono risposta ent ro i term ini previsti da lla normativa applica bile ( indicativ amente 30 giorni). Le conte stazioni se guono il <a hre f=\"#/m ode razione\" >procedime nto di moderazione</a >.</ p>" +
+ '<div class="card" ><h3 style ="ma rgin-top:0" >Alt ri cana li ( da attivare in produzione) </h3><ul cla ss="mb0" >' +
+ "<li>privacy@ … — ric hie ste relative ai dati personal i</ li>" +
+ "<li>m ode razione @… — segna lazioni urge nti su contenuti</li>" +
+ "<li>PEC del l'eve ntuale tit olare — da definire con la rev isione legale </l i></ ul>" +
+ '<p class=" smal l muted mt 2 mb0">Questo prototipo non invia email real i: le richie ste re stano nel l\'istanza dimostrativa ( vedi <a hre f="#/casel la-dem o" >casella demo</a >).</ p></ div >' +
+ '<div class="ale rt alert-info mt2" ><b>Attenzione. </b> Zoom Zoom non fornisce consulenza lega le: per que stioni giuridiche rivolgiti a un profe ssionista a bil itato.</ div >' +
+ "</div ></div ></ div >";
+ return {
+ title: "Contatti",
+ html: html,
+ after: function () {
+ $("#contact-form" ).addEvent Liste ne r(" submit", ev => {
+ ev.preventDe fault();
+ const email = $("#ct-email ").val ue.trim(), msg = $(" #ct-msg").val ue.trim(), k ind = $ ("#ct-kind").val ue;
+ if ($("#ct-hp").va lue) { t oast(" Richiesta rifiutata (controllo a nti-bot).", "err"); return; }
+ if (!validateEmail(email)) { toa st("Indirizzo email non val ido.", "err"); return; }
+ if (msg.length < 30) { toa st("Il me ssagg io deve ave re almeno 30 caratteri.", "err"); ret urn; }
+ if (Supa.on()) { S upa.contact({ email : email, msg: m sg, kind: kind } ); ev.target.re set(); return; }
+ if (kind === " privacy") {
+ DB().privacyReque sts.push( { id: uid(" pr"), email: ema il, kind: kind, message: m sg, status: " receive d", createdAt: nowISO(), i sDemo: fa lse } );
+ saveDB();
+ } else {
+ Mail.send("sta ff@zoomz oom.local ", "Nuova richiesta di contatto: " + k ind, "Da : " + email + "\ n\ n" + m sg, []);
+ }
+ ev.target.reset();
+ toast("Richie sta inv iata. Se rig uarda i tuoi dati, la trove rai tracciata nell'a rea rise rvata.");
+ });
+ }
+ };
+}
+
+/* ---------------- Casella email demo ---------------- */
+function vie wMail box() {
+ const mail s = DB().mail s;
+ const addrs = A rra y.from( new Set(mails.ma p(m => m.to))).sort() ;
+ const html =
+ crumbs([{ labe l: "Home", href: "#/" }, { la bel: "Ca sella ema il dem o" }]) +
+ '<div class="container" style =" padding-top: 22px; padding-bottom: 30px" >' +
+ '<div class=" section- hea d" ><div ><h1 style ="ma rgin: 0" >Casel la email dimostrativ a</ h1><p cla ss=" sub" >Sim ula la posta in a rrivo dei flussi (verifiche, inviti). In produzione i me ssagg i pa rtono davve ro via SMTP: qui resta no nel browse r pe r prova re i col legament i.</ p></ div >' +
+ '<label cla ss=" small" for="mb-filter" style =" display: flex;ga p: 8px ;alig n-item s:center">De stinata rio <select id="m b-filte r" sty le="width:aut o"><option va lue =" ">T utti</ opt ion>' +
+ addrs.map(a => ' <option val ue ="' + e sc(a) + ' ">' + esc(a) + "</ opt ion>").join( "") + "</ select></la bel ></div>" +
+ '<div id="mb-l ist" >' + (ma ils.l engt h ? mail s.slice(0, 40).ma p(m =>
+ '<div class="mail-item" data-to="' + e sc(m.to) + '" ><div cla ss="ma il-hea d" ><span><b>A: </ b> ' + e sc(m.to) + " </ spa n><span>" + fmtDateTime (m.at) + (m.isDemo ? " · " + DEMO_CHIP : "") + " </spa n></d iv >" +
+ '<div class="mail- body" ><h3 style ="ma rgin: 0 0 6px" >' + e sc(m.subject) + "</ h3><p>" + esc(m.body) + " </ p>" +
+ (m.links || []).map(l => '<a cla ss="ma il-link" hre f="' + e sc(l.href) + '" >' + esc( l.label ) + " </a >").join("") + "</div></ div >").j oin("")
+ : '<div class="ale rt alert-info">Ne ssun messaggio.</ div >') + " </ div ></div>";
+ return {
+ title: "Casella dem o",
+ html: html,
+ after: function () {
+ $("#mb-filte r").addEve ntListener("c hange", ev => {
+ const v = ev.target.value ;
+ $$("#mb-list .mail-item"). forEach(el => { el. style.displa y = !v || el.getAttribute(" data-to" ) === v ? "" : " none"; } );
+ });
+ }
+ };
+}
+
+/* ============================================================================
+ AUTENTICAZIONE E PROFI LO
+ ============================================================================ */
+function fie ldE rror(id, msg) {
+ const input = $( "#" + id) ;
+ if (!input) { toa st(msg, "err"); ret urn; }
+ const field = input.close st(". fiel d");
+ if (!fiel d) { toa st(msg, "e rr" ); ret urn; }
+ field.cla ssList.add(" has-e rror") ;
+ let err = fiel d.querySe lector( ".error-msg");
+ if (!err) { err = doc ument.createEleme nt("spa n"); e rr.cla ssName = " error-m sg"; fiel d.appe ndChil d(err); }
+ err.textContent = msg;
+}
+function clearFiel dErrors() { $ $(".fiel d.has-e rror" ).forEach(f => f.classList.rem ove(" ha s-error" )); }
+function downloa dJSON( file name, data) {
+ const bl ob = ne w Bl ob([ JSON.st ringify(data, null, 2)], { type : "appl ication/json" });
+ const url = URL.create ObjectU RL( blob);
+ const a = docume nt.createElement( "a");
+ a.href = url; a.dow nloa d = file name;
+ docume nt.body.appe ndC hil d(a); a.click (); a.remove();
+ setTimeout( () => UR L.rev okeObjectUR L( url ), 5000);
+}
+
+let LOGIN_PE NDI NG_2FA = null;
+function vie wLogin() {
+ const ste p2 = LOGIN_PENDING_ 2FA;
+ const dem oBox = '<div cla ss="l ogin-dem o-hint mt3" ><b>Account dimostrativ i</ b> ( pa ssword v isibile solo perché prototipo) :<br>' +
+ "utente@e sempio.test · age nzia @esem pio.test — pa ssword: <code>" + e sc(DEMO_P W) + " </code><br>" +
+ "Gli account di moderazione /amminist razione accedono sol o da ll' <a href='#/a dmin' >a rea amminist rativa dedicata</a > (2FA obblig atoria). </div>";
+ const html =
+ '<div class="container section" style ="max- width: 560px" >' +
+ '<h1>Accedi</ h1>' +
+ '<div class="card" >' +
+ (step2
+ ? '<div cla ss="ale rt alert-info" >Inserisci il codice tempora neo a 6 cifre dal la tua a pp di a utenticazione (G oog le Aut hent icator, Aegis, 1Passw ord…). </div>' +
+ '<form id=" login-2fa" ><div class="fie ld"><la bel for="l 2-code">C odice 2FA </la bel ><input id=" l2-code" inputmode="numeric" autoc omplete =" one-time-code" maxle ngth=" 6" placehol der=" 000000" re quire d sty le="letter- spacing: 4px ;font-size:1. 2rem;text-al ign:ce nter" ><spa n class="hint">Codice a uso singolo, valido ~30 secondi (tol lera nza ±30 s).</ span></div>' +
+ '<button cla ss=" btn bt n-prima ry bt n-bl ock" type=" submit" >Ve rifica e accedi</ button></form >' +
+ '<p class="sma ll mute d mt2 mb0" ><button cla ss="l ink" data-action="l ogin-re start" >Torna al le credenzia li</button></p>'
+ : '<form id="log in- form">' +
+ '<div class=" fiel d" ><label for="l-email" >Email</label><input id="l-email " type ="email" a utocomplete="email" required></div >' +
+ '<div class=" fiel d" ><label for="l- pw" >Passw ord</label><input id="l-pw" ty pe="pa ssword" autocom plete ="curre nt-pa ssword" re quire d></ div >' +
+ '<div class=" hp-fiel d" ><label for="l- hp" >Non compilare </l abel ><input id=" l-hp" tabindex="-1" a utocom plete ="off"></ div >' +
+ '<button cla ss=" btn bt n-prima ry bt n-bl ock" type=" submit" >Accedi</ button></form>' +
+ '<hr><button cla ss=" btn btn-g host btn- block " disa ble d title="Config urabile in produzione con Google OAut h 2.0" style ="c ursor:not-allowe d">C ontinua con G oogle <spa n class="pill pil l-gray" >in produzione</ span></button>' +
+ '<p class="sma ll mute d center mt 2 mb0">Non hai un account? <a href="#/ registrati">Registrati</a> — oppure a pri la <a hre f="#/casel la-dem o" >casell a demo</a >.</ p>' ) +
+ "</div >" + dem oBox + "</ div>";
+ return {
+ title: "Accedi",
+ html: html,
+ after: function () {
+ if (step2) {
+ $("#login- 2fa ").addEvent Listene r(" submit", ev => {
+ ev.prevent Defa ult() ;
+ if (publ icLog inSec ondFactor(LOGIN_PE NDING_2FA, $("# l2-code").val ue)) {
+ LOGIN_PENDI NG_2FA = null; toa st(" Accesso riuscit o."); location. hash = " #/profil o";
+ } else { fiel dError("l 2-code", "Codice non val ido o sca dut o."); }
+ });
+ } else {
+ $("#login- form ").addEve ntListene r(" submit", ev => {
+ ev.prevent Defa ult() ;
+ clearFiel dErrors();
+ if ($("#l- hp").val ue) ret urn;
+ if (Supa.on()) { S upa.l ogin($( "#l-email ").val ue, $("#l- pw ").val ue, "l-pw"); return; }
+ const res = publicLogin($( "#l-email ").val ue, $("#l- pw ").val ue);
+ if (res.ok) { toa st("Accesso riuscito. Be nve nuto su ZoomZoom."); l ocation.ha sh = "#/ profilo"; }
+ else if (res.needs2fa) { LOGIN_PENDI NG_2FA = res. use r; A pp. render(); }
+ else if (res.error === " locke d") { toast("T roppi tentativ i: accesso bl occato pe r 60 secondi (protezione a nti-forza bruta).", "err"); }
+ else if (res.error === " adminOnl y") { toa st(" Que sto account è riservato all'a rea amministrativa.", "e rr" ); setTime out( () => location. hash = " #/adm in", 900); }
+ else if (res.error === " disa ble d") { toa st("Account sospe so: contatta la moderazione.", "e rr" ); }
+ else { fiel dError("l- pw", "Cre de nzial i non val ide." ); }
+ });
+ }
+ }
+ };
+}
+ACTIONS["l ogin-re start"] = ( ) => { LOGIN_PENDING_ 2FA = nul l; A pp.re nder( ); };
+
+function vie wRegister() {
+ const html =
+ '<div class="container section" style ="max- width: 600px" >' +
+ "<h1>Reg ist rati</ h1>" +
+ '<div class="ale rt alert-info" >La registrazione serve a <b>ricevere o richiede re </b> la verifica di un\'e sperie nza. La consultazione di sc hede, me die e classifiche è sempre libera, senza account.</ div >' +
+ '<div class="card" ><form id=" reg-form" >' +
+ '<div class="fiel d" ><label for="r-email ">Email</ labe l><input id="r-email " type ="ema il" a utocomplete="email " required><spa n class="hint" >Non vie ne mai mostrata pubbl icamente. Serve per la verifica e pe r gli inv iti.</ spa n></ div>' +
+ '<div class="fiel d" ><label for="r-nick" >Pse udonimo pubblico</la bel><input id="r- nick" required minle ngth=" 3" placehol der="Es. A ria nna _84" ><span cla ss=" hint">Nome v isibile sull e tue rece nsioni: sceg li uno pseudonim o, non il tuo nome completo.</ span></di v>' +
+ '<div class="fiel d" ><label for="r-pw" >Passw ord (minimo 10 caratte ri) </la bel ><input id="r- pw " type =" passw ord" a utocomplete="ne w-pa ssword" minlengt h="10" required></div>' +
+ '<div class="fiel d" ><label for="r-pw 2">Ripeti la pa ssword</ label ><input id=" r-pw2" type =" passw ord" a utocom plete="ne w-pa ssword" minlengt h="10" required></div>' +
+ '<label cla ss="check line mb2" ><input ty pe="check box" id="r-te rms" required><span>Ho letto e accetto <a hre f="#/termini" target="_se lf">term ini d\' uso</a>, <a hre f="#/ privacy">privacy </a> e <a href="#/ regole-recensioni" >reg ole delle rece nsioni</a >.</ spa n></l abel >' +
+ '<div class=" hp-fiel d" ><label for="r-hp" >Non compilare </la bel ><input id=" r-hp" tabindex="-1" a utocom plete ="off"></ div >' +
+ '<button class="bt n bt n-primary btn- block " type =" submit" >Crea account</ button></form >' +
+ '<hr><p class="sma ll mute d center m b0">Hai già un account? <a hre f="#/accedi">Accedi</a>. </p></div></ div >';
+ return {
+ title: "Registrati",
+ html: html,
+ after: function () {
+ $("#reg-form").addEve ntListener(" submit ", ev => {
+ ev.preventDe fault();
+ clearFiel dErrors() ;
+ if ($("#r-hp").va lue) return;
+ if ($("#r-pw").val ue !== $("# r-pw 2" ).value ) { fie ldE rror(" r-pw2", "Le pa ssword non coincidono."); return; }
+ if (Supa.on()) {
+ if ($("#r- nick ").val ue.trim().le ngth < 3) { fie ldError(" r-nick ", "Il nome pubblico deve ave re alme no 3 caratteri."); return; }
+ Supa.register($("# r-email ").val ue, $("#r- nick" ).val ue, $("#r- pw ").val ue, "r-email ");
+ return;
+ }
+ const re s = registerAccount($ ("#r-ema il").va lue, $(" #r-nick").val ue, $(" #r-pw").va lue) ;
+ if (!res.ok) { fie ldE rror(" r-email ", res.error); ret urn; }
+ toast("Registraz ione avve nuta: a pri la casel la dem o pe r verificare l'indirizzo email.");
+ location.hash = " #/casel la-demo";
+ });
+ }
+ };
+}
+function vie wVerifyEmail (toke n) {
+ const re s = ve rifyEmailT oke n(toke n) ;
+ const html =
+ '<div class="container section" style ="max- width: 560px" >' +
+ (res.ok
+ ? '<div cla ss="ale rt alert-ok" ><h1 style ="ma rgin:0 0 8px" >Email ve rificata</ h1>G razie, l\'indirizzo <b>' + e sc(re s.user.email) + " </ b> è confe rmato. Ora puoi <a href=\"# /accedi\" >accede re</a > e richie dere la verifica di un'espe rie nza.</ div >"
+ : '<div class="ale rt alert-da nge r"><h1 style ="margin:0 0 8px" >Colle gament o non val ido</h1>Il token è e rrato o già utilizzato. Se ha i appe na effettuato la registrazione, a pri la <a href=" #/casel la-demo">ca sella demo</a > e usa il colle gament o più rece nte.</ div >') +
+ "</div >" ;
+ return { title: "Ve rifica email", html: html };
+}
+
+/* ---------------- Profil o ---------------- */
+function profileTa bs(active) {
+ const tabs = [["#/ profilo", "Panoramica"], ["#/ profilo-inviti", "Invit i"], ["#/profil o-impostazioni", "Impostazioni e privacy"]];
+ return '<div cla ss="ta bs" role ="ta blist" >' + tabs.map(t => ' <a role ="tab" aria- selected="' + (t[0] === active ) + '" hre f="' + t[0] + '"
+ : (TOTP_PENDING
+ ? '<div cla ss="ale rt alert-info" ><b>Passaggio 2 di 2. </b> Aggiungi la chiave alla t ua app (G oogle A uthe nticator, Aegis, 1Passw ord…) e inse risci il codic e gene rato. </div>' +
+ '<div class="card card-pa d-s m b2" ><p cla ss=" small m b1"><b>Chiave seg reta (inse rime nto ma nua le): </b></p><p cla ss="mono" style =" word- brea k:break-al l;bac kground:var(-- pape r); pa dding: 8px; borde r-radius: 6px ">' + esc(TOTP_PENDING ) + '</p>' +
+ '<p class="sma ll mb1 mt2" ><b>URI per le a pp (e quivale nte del QR code): </ b></p><p cla ss="m ono smal l" sty le="word- brea k: break-a ll; background:va r(--pa per); pa dding :8px; borde r-ra dius: 6px">otpa uth://tot p/ZoomZoom:' + esc( u.email) + "?secret =" + e sc(TOTP_PENDING) + "&issuer=Zoom Zoom&algorithm =SHA 1&dig its=6& period=30</ p>" +
+ '<p class="sma ll mute d mb0" >In produzione vie ne mostrato un QR code. La chiave è ge nerata nel tuo browse r e validata localme nte (R FC 6238).</ p></ div >' +
+ '<form id="t otp-on" ><div cla ss=" fie ld" ><la bel for="t-on-code" >Codice a 6 cifre </la bel ><input id="t-on-code" inputm ode =" nume ric" maxle ngt h=" 6" required style ="letter- spacing: 3px;font-size: 1.15rem;text-align:ce nter" ></div>' +
+ '<div class=" row" ><button class="bt n bt n-primary" type =" submit" >Ve rifica e attiva</ button><butt on cla ss=" btn btn-ghost " type =" button" data-action="tot p-cancel" >A nnul la</ button></div></ form >'
+ : '<div class="ale rt alert-wa rn" ><b>2FA non attiva.</ b> A ggiung i un secondo fattore con un\'a pp di codici tempora nei (TOTP) : re nde molto più difficile l\'uso inde bito del tuo account.</div>' +
+ '<button cla ss=" btn bt n-prima ry" data-action="tot p-start ">Attiva la 2FA (a pp di aute nticazione) </ button>');
+ const html =
+ '<div class="container" style ="max-w idt h:760px ;pa dding-top: 26px; pa dding-bottom: 30px ">' +
+ '<div class=" section- hea d" ><div ><h1 style ="ma rgin: 0" >Impostazioni e privacy</ h1><p cla ss=" sub" >Pse udonimo, pa ssword, doppia aute nticazione e cont rol lo dei tuoi dat i.</ p></ div ></ div>' +
+ profileTa bs( "#/ profil o-im postazioni") +

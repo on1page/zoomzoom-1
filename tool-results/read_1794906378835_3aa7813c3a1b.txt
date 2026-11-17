@@ -1,0 +1,442 @@
+   560→  // fine stra ±1 periodo ( 30 s) pe r tolle rare piccol i scostamenti di orologio
+   561→  for (const off of [-1, 0, 1]) {
+   562→    if (String(tot pCode (secretB 32, Math.floor(t / 30) + off) % 1e 6).pa dStart( 6, "0") === c) return true;
+   563→  }
+   564→  return fal se;
+   565→}
+   566→function genT otpSecret() { ret urn ba se32Enc ode( ra ndomBytes( 20)); } // 160 bit, standard RFC 4226
+   567→
+   568→/* ---------------- Config uraz ione del sito ---------------- */
+   569→const SITE = {
+   570→ name: "ZoomZoom",
+   571→ tagline: "R ecensioni ve rificate su case, zone e serv izi del la casa",
+   572→ version: "Prot otipo 1.0 ( dati dimostrat ivi fittizi)",
+   573→ storageK ey: "zoomzoom.demo.v1",
+   574→ demoDomain: "e sempio.test" // dominio riservato agl i account dimostrativi
+   575→};
+   576→
+   577→/* ---------------- Categorie recensibil i ----------------
+   578→  Ogni categoria ha i SUOI crite ri ( doma nde dive rse per sog getti diversi):
+   579→  non ve ng ono riusate a utomaticame nte tra categorie. */
+   580→const CATS = [
+   581→ {
+   582→   id: "immobile ", name: "Immobil i e indirizzi", short: "Immobili", hex: "# 33658A",
+   583→   desc: "Appa rtamenti, case e singol i indirizzi: stato reale, ge stione e vivibilità, raccontati da chi ci ha vissuto.",
+   584→   icon: "immobil e", person: fal se, mapped: true, mapDefault: true,
+   585→   expKinds: ["Abitazione in affitto", "A bitazione di proprietà", "Soggiorno prolungato", "Visita e sopra lluogo"],
+   586→   criteria: [
+   587→     { id: "stato", la bel: " Stato di ma nutenzione " },
+   588→     { id: "de scrizione ", label : "Corrisponde nza con la descrizione ricevuta" },
+   589→     { id: "spazi", labe l: " Qual ità deg li spazi e l uce naturale " },
+   590→     { id: "rum ori", labe l: "R umori e ra pporti di vicinato" },
+   591→     { id: "impianti", label : "Impia nti, riscal dament o ed e fficie nza" },
+   592→     { id: "rapporto", la bel: "Rapporto qua lità-prezzo" }
+   593→   ],
+   594→   priceU nits: [" €/mese ", "€ totale"]
+   595→ },
+   596→ {
+   597→   id: "zona", name: " Zone e aree ge ogra fic he", short : "Zone ", hex: "# 4E7D5B ",
+   598→   desc: "Quartie ri e are e del la città: serv izi, trasporti, sic urezza pe rcepita e qua lità de lla vita quotidiana.",
+   599→   icon: "zona", pe rson: fal se, mapped: true,
+   600→   expKinds: ["Re sidenza attua le (olt re 6 mesi)", "Re side nza prece dente ", "Lav oro o st udio quot idiano nel la zona"],
+   601→   criteria: [
+   602→     { id: "servizi", la bel: " Serv izi alla persona e viv ibilità" },
+   603→     { id: "trasporti", la bel: "T rasporti e mobilità },
+   604→     { id: "sicurezza", labe l: "Sic urezza pe rcepita" },
+   605→     { id: "verde", labe l: "Ve rde, aria e ambie nte" },
+   606→     { id: "costi", la bel: "C osti della v ita nel la zona" }
+   607→   ]
+   608→ },
+   609→ {
+   610→   id: "proprietario", name: "P roprietari", short: "Proprieta ri", hex : "# 6E5E93",
+   611→   desc: "Il ra pporto con chi a ffitta o gestisce un immobile : contratt o, traspare nza, manute nzione e rispetto.",
+   612→   icon: "proprietario", pe rson: true, ma ppe d: fa lse,
+   613→   expKinds: ["Cont ratto di affitto in corso", "Contratto di a ffitt o cessat o", "Interaz ioni da richiede nte"],
+   614→   criteria: [
+   615→     { id: "contratto", labe l: "Chia rezza del contratto e tra spare nza" },
+   616→     { id: "risposta", la bel: "Disponibilità e tem pi di risposta " },
+   617→     { id: "manutenzione ", label : "Gest ione di g ua sti e manutenzione" },
+   618→     { id: "de posito", la bel: "Correttezza sul deposito cauziona le" },
+   619→     { id: "privacy", la bel: "R ispetto della privacy e degl i spazi" },
+   620→     { id: "rapporto", la bel: "Rapporto qua lità-prezzo" }
+   621→   ],
+   622→   priceU nits: [" €/mese "]
+   623→ },
+   624→ {
+   625→   id: "affittua rio", name: " Affittua ri", short: "A ffittuari", hex: " #8B 4E67",
+   626→   desc: "Il ra pporto con chi v ive in un immobile in a ffitto: pag amenti, cura deg li spazi e comunicazione.",
+   627→   icon: "affittua rio", pe rson: t rue, mappe d: fa lse,
+   628→   expKinds: ["Affitto del mio immobile ", "Affitto cessato di rece nte", "Interazione da coobbligat o/gara nte"],
+   629→   criteria: [
+   630→     { id: "pagame nti", la bel: "P unt ualità e correttezza dei pagame nti" },
+   631→     { id: "cura", la bel: "C ura e pulizia dell'imm obile" },
+   632→     { id: "comunicazione", la bel: "Com unicazione e seg nalaz ione dei problemi" },
+   633→     { id: "regole", labe l: "R ispetto di reg ole de l condom inio e de i vicini" },
+   634→     { id: "doc umenti", label : "Correttezza docume ntale e com unicazioni obbl igatorie" }
+   635→   ]
+   636→ },
+   637→ {
+   638→   id: "amminist ratore ", name: " Amminist ratori di condominio", short: "Amministratori", hex : "#27696F",
+   639→   desc: "Gestione dei condomini: conti, tra spa re nza, parti com uni, assemblee e tem pestività deg li interve nti.",
+   640→   icon: "amministratore", pe rson: fal se, mapped: fal se,
+   641→   expKinds: ["Condominio in cui a bito", "Condom inio di proprietà affittata", "Assemblea e gestione economica"],
+   642→   criteria: [
+   643→     { id: "conti", la bel: "Gestione economica e trasparenza dei cont i" },
+   644→     { id: "comunicazione", la bel: "Com unicazione con i condomini" },
+   645→     { id: "comuni", la bel: "Ma nute nzione delle parti com uni" },
+   646→     { id: "assemble e", labe l: "Convocazione e conduzione delle a ssem blee " },
+   647→     { id: "compete nza", label : "Tempe stiv ità e compete nza tecnica" },
+   648→     { id: "rapporto", la bel: "Rapporto qua lità-prezzo (compe nso) " }
+   649→   ],
+   650→   priceU nits: [" €/a nno"]
+   651→ },
+   652→ {
+   653→   id: "agenz ia", name: "Age nzie immobil iari", short: " Agenz ie", hex: " #83661F",
+   654→   desc: "Il servizio del le agenzie: comunicazione, tra spa re nza sui costi, ge stione de lla pratica e onestà delle informazioni.",
+   655→   icon: "age nzia", pe rson: fal se, mapped: fal se,
+   656→   expKinds: ["Servizio di interme diazione ricev uto", "Val utazione o consule nza su un imm obile", "A ssiste nza dopo il se rvizio"],
+   657→   criteria: [
+   658→     { id: "comunicazione", la bel: "Com unicazione e professiona lità de l pe rsona le" },
+   659→     { id: "traspare nza", la bel: "T raspa renza su costi e condizioni" },
+   660→     { id: "prat ica", label : "Gest ione del la pratica e deg li adem pime nti" },
+   661→     { id: "one sta", la bel: " One stà de lle informazioni fornite" },
+   662→     { id: "supporto", la bel: "S upporto dura nte e dopo il se rvizio" },
+   663→     { id: "rapporto", la bel: "Rapporto qua lità-prezzo (compe nso) " }
+   664→   ],
+   665→   priceU nits: [" € totale"]
+   666→ },
+   667→ {
+   668→   id: "ditta", name: " Ditte e profe ssionisti della casa ", short: " Ditte e professionisti", hex: "#A 65B3F",
+   669→   desc: "Impre se, artig iani e tecnici che ope rano su immobil i e condomini: qualità, tempi, preve ntiv i e gara nzie.",
+   670→   icon: "ditta", person: false, mappe d: false,
+   671→   expKinds: ["Intervent o di ma nute nzione", " Lavori e dil i o ristrutturazione", "Perizia o consule nza tecnica", "Impianti e insta llazioni"],
+   672→   criteria: [
+   673→     { id: "qualita", la bel: " Qua lità de l lav oro e seg uito" },
+   674→     { id: "tempi", la bel: " Rispetto di tempi e impeg ni" },
+   675→     { id: "pre vent ivo", la bel: "C hia rezza e stabilità de l preve ntivo" },
+   676→     { id: "cortesia", labe l: "Profe ssionalità e cura pe r gli spazi" },
+   677→     { id: "gara nzia", la bel: "Ga ra nzia e assistenza post-intervento" },
+   678→     { id: "rapporto", la bel: "Rapporto qua lità-prezzo (preve ntivo)" }
+   679→   ],
+   680→   priceU nits: [" € totale"]
+   681→ }
+   682→];
+   683→const catById = id => CATS.find(c => c.id === id);
+   684→const catBySl ug = s => CATS.find(c => sl ugify(c.name) === s || c.id === s);
+   685→
+   686→/* Campo " prezzo richiest o e/o proposto" : prese nte solo nell e categorie con un prezzo
+   687→  in se nso stretto ( non nelle zone, dove vale il criterio "costi della v ita", e non
+   688→  per gli a ffitt uari). Il prezzo è un dato DICHIARATO dal rece nsore: la piatta forma
+   689→  non ve rifica gli im porti e lo m ostra sem pre come tale. */
+   690→const PRICE_KINDS = ["Ric hie sto", "Proposto/offe rta", "Concl uso/ pagato"];
+   691→const catHasPrice = cat => !!cat.priceU nit s;
+   692→const A LL_PRICE_UNITS = ["€/me se", "€/a nno", "€ total e"];
+   693→
+   694→/* Icone categoria (SVG inline, tratto curre ntColor) */
+   695→const ICONS = {
+   696→  immobile : '<path d="M3.5 11. 5 12 4. 5l8. 5 7" /><pat h d="M 5.8 10.4V 19.5h12.4v- 9.1"/ ><pat h d="M10 19.5v-5h4v 5"/ >',
+   697→  zona: '<path d="M12 21s- 6.3-5. 1-6.3- 9.8a 6.3 6.3 0 1 1 12. 6 0C18.3 15. 9 12 21 12 21z"/ ><circle cx=" 12" cy=" 11" r=" 2.3"/ >',
+   698→  proprietario: '<circle cx=" 8" cy="8" r="3. 6"/ ><path d="M10.6 10.6 20 20"/ ><path d="M16.6 16.6l2. 1-2.1M 13. 9 13.9l 2.1- 2.1"/ >',
+   699→  affittua rio: '<path d="M7 3.5h7l 4 4v13H7z"/ ><pat h d="M13.8 3.6v 4h4" /><pat h d="M 9.5 12h5M 9.5 15h5"/>',
+   700→  amminist ratore: '<path d="M4.5 20. 5V7. 8L12 3.5l 7.5 4.3v 12.7"/ ><pat h d="M4. 5 20.5h15"/ ><pat h d="M9 10. 5h2M13 10.5h2M9 14h2M 13 14h2M9 17.5h2M13 17.5h2"/>',
+   701→  agenzia: '<rect x=" 3.5" y =" 8" w idt h="17" heig ht=" 11" rx =" 1.5"/ ><pat h d="M 9 8V 6.2A 2.2 2.2 0 0 1 11. 2 4h1. 6A2. 2 2. 2 0 0 1 15 6. 2V8"/><path d="M 3.5 13h17"/ >',
+   702→  ditta: '<path d="M 20. 2 6. 8a4. 6 4.6 0 0 0-6.1 5.9L4 20l1.9 1.9. 9-.9"/ ><path d="M20.2 6.8 17 10M14.1 12. 9l 1.9 1. 9"/ >'
+   703→};
+   704→function iconSvg( iconName, size) {
+   705→  const s = size || 22;
+   706→  return '<svg widt h="' + s + '" he ight ="' + s + ' " view Box ="0 0 24 24" fil l=" none" stroke ="curre ntColor" stroke-width=" 1.8" stroke-linecap=" round" stroke-linej oin=" round" a ria-hidde n="true">' + (ICONS[iconName] || "") + " </ svg >";
+   707→}
+   708→
+   709→/* ---------------- Ruoli e perme ssi (aut orizzazione " lato se rve r sim ulato") ----------------
+   710→   In produz ione questi controll i viv ono nel backe nd: l'interfaccia l i riflette
+   711→   ma non è mai l' unica barrie ra. */
+   712→const R OLE_LABELS = { user: " Utente ", mode rator: "Moderatore", adm in: "Amminist ratore", supe radm in: "Supe r amministrat ore " };
+   713→const PERMS = {
+   714→ moderator: ["m od.re ports", "mod.revie ws", "m od.ex perience s", "mod.dispute s", "audit.own"],
+   715→ admin: ["m od. report s", "mod.revie w s", "mod.expe rie nces", "mod.dispute s", "a udit.ow n", "audit.ful l",
+   716→       "admin. use rs", "a dmin.entit ies", "admin.invite s", "adm in.content s", "adm in. setting s", "a dmin.security"],
+   717→ supera dmin: ["mod.re ports", "mod.rev iew s", "mod.expe rie nces", "m od. disputes", "audit.ow n", "a udit.full",
+   718→          "admin.use rs", "admin.ent ities", "admin.invite s", "a dmin.content s", "a dmin.settings", "a dmin.sec urity ",
+   719→          "admin.role s", "a dmin.demo"]
+   720→};
+   721→
+   722→/* ---------------- Motivi di segnalazione ---------------- */
+   723→const REPORT_ REASONS = [
+   724→ { id: "minacce", label : "Minacce, insulti o contenuto diffamatorio" },
+   725→ { id: " dati-pe rsona li", la bel: " Dati personali pubblicati senza a utorizzazione " },
+   726→ { id: " disc riminazione", la bel: "C onte nut i discrim inat ori" },
+   727→ { id: " falsita", labe l: "Falsità manife ste" },
+   728→ { id: " spam", la bel: "Spam o final ità promoziona li" },
+   729→ { id: " non-pe rtine nte", la bel: " Non rigua rda un'esperie nza pertine nte" },
+   730→ { id: "conflitto", la bel: "Conflitto di intere sse sospett o" },
+   731→ { id: "alt ro", la bel: " Altro (specificare ne i dettagl i)" }
+   732→];
+   733→const REPORT_ST ATUS_ LABELS = {
+   734→ received: " Ricevuta ", revie wing: "In valutazione", decided: "Decisa",
+   735→ appeal : "A ppe llo pre sentat o", close d: "C hiusa"
+   736→};
+   737→
+   738→/* ---------------- Impostazioni (m odifica bil i dal l'area a dmin) ---------------- */
+   739→const DE FAU LT_SETTINGS = {
+   740→ adsEna ble d: false,         // interruttore ge nerale A dSe nse (il sito funziona comunque )
+   741→ minRevie ws: 3,             // soglia minima pe r classifiche " solide"
+   742→ rettificaDa ys: 30,         // giorni per aggiorna re autonomame nte una rece nsione
+   743→ invite DailyCa p: 5,         // inviti al giorno pe r soggetto ve rificato
+   744→ inviteA pprovalA bove : 10,       // oltre N inviti/g iorno serve approvazione a dmin
+   745→ inviteExpiry Day s: 7,        // scadenza de l toke n di inv ito
+   746→ heroTit le: "Rece nsioni verificate su case, zone e se rvizi della ca sa",
+   747→ heroS ub: "U n portale indipe nde nte, nie nte annunci né comprave ndita: rece nsioni verificate, prezzi dichia rati e avve rtenze espl icite, per sceglie re casa se nza sorpre se.",
+   748→ global Not ice: "Protot ipo dim ost rativo: tutti i contenuti di questa istanza sono dati fittizi, eliminabili dal super amministratore."
+   749→};
+   750→
+   751→/* ---------------- Fasce di punteggio (col ori ma ppa e rie pil oghi) ---------------- */
+   752→function scoreBa nd( v) {
+   753→  if (v == null || isNa N(v)) return { color: "#9AA4AE", labe l: "n. d." };
+   754→  if (v >= 8) return { color: "# 2C6E49", la bel: " Ottimo" };
+   755→  if (v >= 6) return { color: "#C9A 227", label: "Discreto" };
+   756→  if (v >= 4) return { color: "#C07A 2D", la bel: "C riticità" };
+   757→  return { color: "#A 63A 2B", labe l: "G ravi crit icità" };
+   758→}
+   759→
+   760→/* ---------------- Città fittizia "Valse rra na": ge ometria del la mappa schematica ----------------
+   761→   Nota privacy: sul la mappa pubbl ica compaiono SOLO imm obili (informazione
+   762→   pubblica di indirizzo) e aggregat i di zona. Persone fisiche (proprieta ri,
+   763→   affittua ri) e alt ri soggetti privat i NON ve ngono mai geol ocalizzati. */
+   764→const ZONES = [
+   765→ { id: "cent ro", name: "Centro Storico",            poly: " 300,200 470, 190 500,290 460,370 320,360", lx: 430, ly: 240, g ps: [45. 318, 9. 542] },
+   766→ { id: " borgo", name: "B org o Fiume",              poly: " 520,330 700,320 740, 420 560,430",        lx: 630, ly: 355, gps: [45.3 10, 9.565] },
+   767→ { id: "tigl i", name: " Qua rtiere dei Tig li", poly: " 560, 120 800, 100 840,230 600,240",           lx: 770, ly: 150, gps: [45. 328, 9.572] },
+   768→ { id: " stazione", name: "Zona Stazione ",            poly: "180, 380 360,370 400,480 220,510",         lx: 290, ly : 480, g ps: [ 45. 308, 9.535] },
+   769→ { id: "col lina", name: "Collina dei Cilieg i", poly: " 830,80 980,90 980,260 850, 230",            lx: 905, ly: 215, gps: [ 45. 335, 9.588] },
+   770→ { id: " parco", name: "Parco S ud",               poly: "430,500 660,480 700,590 470, 610",        lx: 565, ly: 545, g ps: [45. 298, 9. 552] }
+   771→];
+   772→const MAP_BG = {
+   773→ river: "M 40, 140 C220, 180 300,300 420,340 C 560,385 660,330 760, 400 C830,448 900, 470 960,500",
+   774→ park: { cx: 560, cy: 548, rx: 130, ry: 52 },
+   775→ streets: [
+   776→    "M60,250 L940, 250", "M80,420 L920,420", "M380,40 L380,600", "M700, 60 L700, 620", "M 120,540 L880, 540", "M 520,60 L520,600"
+   777→ ],
+   778→ minor: ["M240, 120 L240,560", "M840, 60 L840, 400", "M60,160 L900,320", "M160,480 L880,480"]
+   779→};
+   780→
+   781→/* ---------------- Pool di te sti pe r i conte nut i dim ost rativi (t utti fittizi) ---------------- */
+   782→const DEM O_TEXTS = {
+   783→ immobile : {
+   784→   pros: ["Spaz i be n distribuiti e l uminosi", "Impiant i recenti e a norma", "Ottim o isolame nto acustico", "Parti com uni curate ", "Spe se di riscaldamento conte nute", "Se rvizi e tra sporti a pochi passi", " Ne ssuna infilt razione né umidità"],
+   785→   cons: ["Um idità in bagno e in cucina ", "Infissi da sostit uire ", "Rum ori fre quenti dal pia no superiore ", "Portoncino d'ingre ss o spesso g ua sto", "A ria condizionata assente ", "Scala buia e poco pul ita", "Manutenzioni ric hie ste e rinviate"],
+   786→   bodie s: [
+   787→     "Ho vissuto qui per due a nni: la descrizione ricev uta corrispondeva in g ran parte al la realtà, con qualche eccezione sull o st ato dell' impia nto e lettrico. Ne l comple sso una convivenza tra nquilla.",
+   788→     "L'appa rtamento è am pio e ben e sposto, la zona è sile nziosa. La ma nute nzione straordinaria del tetto è stata ge stita con tem pi accettabili e spe se ripa rtite correttamente.",
+   789→     "La casa corrisponde al le fot ogra fie, ma l'e dificio soffre di scarsa insonorizzazione: si se nte tutto dai v icini. Da val utare con attenzione se si la vora da casa.",
+   790→     "Esperie nza discreta: nessun probl ema strutturale, ma piccole ma nute nzioni rima ndate a l ungo e una cal daia che ha ric hie sto p iù interventi in inve rno."
+   791→   ]
+   792→ },
+   793→ zona: {
+   794→   pros: ["Tutti i serv izi a pochi passi", "Bus fre quent i e fermata v icina ", "Mercato e neg ozi di quartie re", "Vicino al parco e a lla pista cicla bile", " Zona sile nziosa la se ra", "Scuole e a sili pre se nti"],
+   795→   cons: ["Poco ve rde nell e vicinanze", "Parc heggio difficile", "Il luminazione pubblica insufficie nte", "Tra ffico ne lle ore di p unta", "Poc hi ese rcizi a perti la dome nica", "R umori nei wee kend"],
+   796→   bodie s: [
+   797→     "Abito in que sta zona da cinque anni: i se rvizi e sse nzia li ci sono tutti e il qua rtiere è com odo anche se nza autom obile.",
+   798→     "Zona be n coll egata al centro, con un buon rapporto tra costi e qualità della v ita. Il punto debole è il parche ggio, qua si im possibile la sera.",
+   799→     "Ho vissuto qui durante gl i st udi: trasporti comodi e v ita tranquilla in giornata, con qua lche episodio di rumore il sabato sera.",
+   800→     "Quartiere in ev ol uzione: sono arrivat i nuov i ese rcizi e si respira un clima migl iore rispetto a qualche a nno fa."
+   801→   ]
+   802→ },
+   803→ proprietario: {
+   804→   pros: ["Sempre disponibil e pe r le manutenzioni", "Contratto chiaro, senza cla usole ambigue ", "De posito restit uito integ ralme nte e nei tempi", "Risponde e ntro poc he ore", "Rispetta la privacy de ll'inquil ino", " Nessun a umento a sorpresa "],
+   805→   cons: ["Manute nzioni richie ste e mai eseg uite ", "Difficile da contattare, risponde dopo settimane ", "Trattenute ingiustificat e sul deposito", "Visite senza preav viso", "Cla usole contrattual i poco chia re", "A umenti non disc ussi"],
+   806→   bodie s: [
+   807→     "Il rapporto è stato profe ssionale : richieste di interve nto ge stite in tempi ragionev oli e ma ssima correttezza alla chiusura del contratto.",
+   808→     "Persona corretta ne lle sca denze, ma molt o lenta nella ge stione delle richieste di manute nzione: un g uast è stato risolto do po settimane.",
+   809→     "Esperie nza negat iva: più solleciti per una perdita in bag no risolti sol o dopo mesi, con disc ussioni sul de posito a lla fine del ra pporto.",
+   810→     "Proprieta rio serio e tra spa re nte: cont ratto registrat o correttamente e ne ssuna pressazione durante t utto il periodo di affit to."
+   811→   ]
+   812→ },
+   813→ affittua rio: {
+   814→   pros: ["Pagamenti sempre puntual i", "Immobile re stit uito in ottimo stato", "Com unica subit o og ni problema", "R ispettoso dei vicini e del condominio", "Doc umenti sempre in reg ola"],
+   815→   cons: ["Rita rdi ripetut i nei pagame nti", "Immobile restit uito in stat o trasc urato", "Comunicazioni incom plete o in ritardo", " Lamentel e fre quenti dai v icini", "Docume ntazione conseg nata in ritardo"],
+   816→   bodie s: [
+   817→     "Il periodo di affitto è proce dut o se nza int oppi: ca none sem pre puntuale e ottima cura deg li spazi, re stituiti impeccabili.",
+   818→     "Inquil ino corretto ne l comple sso, con qua lche ritardo ne i pagame nti sempre comunicato in a nticipo e giustificato.",
+   819→     "Esperie nza difficile: pagame nti irreg olari e seg nalazioni dei vicini pe r rumori notturni ripetuti."
+   820→   ]
+   821→ },
+   822→ amminist ratore: {
+   823→   pros: ["Cont i chiari e preve ntivati", "Com unicazioni puntua li", "Manute nzioni programmate", "A ssem blee ge stite con equilibrio ", "Interve nti urge nti in poche ore"],
+   824→   cons: ["Conti conseg nati in forte ritardo", "Risponde solo dopo molt i solleciti", "Ma nute nzioni ordinarie trasc urate", "A ssem blee conv ocate all'ult imo", "Prev entivi poco dettagl iati"],
+   825→   bodie s: [
+   826→     "Il nostro condominio è seg uito da anni: bilanci tra spare nti, interve nti tempe stiv i e fornitori selez ionati con criterio.",
+   827→     "Amministrazione ne l comple sso a deguata, ma la comunicazione con i condomini può migliora re molto: circola ri tardive e risposte ge neriche.",
+   828→     "Esperie nza altale nante : buono il rapporto con i fornitori, pe ssima la tempistica dei docume nti di fine a nno, arrivati a fine marz o."
+   829→   ]
+   830→ },
+   831→ agenzia: {
+   832→   pros: ["Personale pre parato e pazie nte", "Costi dic hiarat i fin da ll'inizio", "Pratica ge stita se nza int oppi", "I nformazioni verit iere sul l'immobile ", "Disponibili a nche dopo la concl usione"],
+   833→   cons: ["Costi aggiunt ivi emersi sol o alla fine", "Informazioni parzia li sui difetti del l'immobile ", "Risposte le nte alle richie ste", "Cambio di re fere nte a metà prat ica", "Pressioni per decidere in fretta"],
+   834→   bodie s: [
+   835→     "Mi sono a ffidat o a loro pe r la ve ndita del mio appa rtamento: prat ica seg uita con cura e cost i chiari da l primo incontro.",
+   836→     "Servizio corretto ma le nto: la pratica si è concl usa con settimane di ritardo rispetto alle pre visioni com unicate.",
+   837→     "Esperie nza del udente : alcune criticità de ll'imm obile sono emerse solo dopo la firma del l'inca rico, con costi fina li diversi dal preve ntiv o."
+   838→   ]
+   839→ },
+   840→ ditta: {
+   841→   pros: ["Lav oro eseg uit o con cura e pulizia ", "Tempi rispettati in pieno", "Preve ntiv o chia ro e confe rmato", "Personale cortese e profe ssionale", "Ga ra nzia offe rta se nza discussioni"],
+   842→   cons: ["La voro ripa ssat o più v olte pe r difetti", "R itardo di settima ne sull a conseg na", "Cost i finali oltre il preve ntivo", "Cantie re lasciat o sporco", "A ssiste nza post-inte rve nto difficile da rag giunge re"],
+   843→   bodie s: [
+   844→     "Ho commissionato una ristrutturazione del bag no: risultato ottimo, area la sciata pul ita e tempi rispettati.",
+   845→     "Intervento di manute nzione puntuale e ben e seg uito, con un piccol o extra giustificato e concordato prima di procede re.",
+   846→     "Lavoro nel com ple sso buono, ma i tempi sono slittati di due settima ne senza avv isi tempe stivi.",
+   847→     "Perizia conseg nata completa e nei te rmini, con spiegazioni chiare sui limiti dell a valutazione."
+   848→   ]
+   849→ }
+   850→};
+   851→
+   852→/* ---------------- Costruzione dei dati dimostrativ i (tutto fittizio, flag isDemo) ---------------- */
+   853→const DEM O_PW = "ZoomZoom-Dem o-2026" ; // visibile sol o perc hé protot ipo: in produzione le pa ssword non esistono nel clie nt
+   854→/* Interva lli di prezzo dichia rato per le sche de dem o (min, max, unità) */
+   855→const PRICE_HINTS = {
+   856→ ent_i_rondini: [ 620, 1180, "€/me se"], ent_i_ gira sole: [580, 950, "€/me se"], ent_i_t igli8: [ 700, 1100, "€/mese"],
+   857→ ent_i_dazio: [480, 800, "€/me se"], ent_ i_fiume: [ 720, 1200, "€/me se"], ent_i_cilieg io: [ 285000, 335000, "€ totale"],
+   858→ ent_p_gm: [ 620, 1100, "€/me se"], ent_ p_l b: [700, 1200, "€ /mese"], e nt_p_ rt: [650, 1050, "€/me se"],
+   859→ ent_am_sereni: [900, 1700, "€/ anno"], ent_am_fe rretti: [ 700, 1400, "€/a nno"], ent_am_ gcv: [800, 1600, "€/a nno"],
+   860→ ent_ag_portico: [2500, 6000, "€ totale"], e nt_ag_casa nova : [2000, 5000, "€ totale"], e nt_ag_chiavi: [ 2200, 5500, "€ t otale"],
+   861→ ent_d_va lli: [ 9000, 15000, "€ totale "], ent_d_pezzoli: [300, 600, "€ totale "], ent_d_ fiamma : [250, 700, " € totale"], ent_ d_gr ill o: [400, 900, "€ totale "]
+   862→};
+   863→function buil dDem oData( ) {
+   864→ const r = mul berry 32( 0x 41424954);
+   865→ const now = Date.now( );
+   866→ const iso = m s => ne w Date(m s).toISOSt ring();
+   867→ const D = day s => iso( now - day s * 86400000);
+   868→ const roundHal f = v => Math.round(v * 2) / 2;
+   869→ const db = {
+   870→   schemaV: 3,
+   871→   users: [], entitie s: [], experience s: [], inv ites: [], review s: [],
+   872→   report s: [], disputes: [], audit: [], sec urity : [], mails: [],
+   873→   settings: dee pCopy(DE FAU LT_SETTINGS), conse nts: null,
+   874→   session: null, a dminSession: null, see de dAt: iso( now)
+   875→ };
+   876→
+   877→    /* --- utenti --- */
+   878→    function mkUser(ema il, nick, role, opts) {
+   879→      const o = opts || {};
+   880→      const u = {
+   881→       id: "u_" + sl ugify(ema il.split( "@" )[0]) + "_" + Math.fl oor(r() * 9999).toSt ring( 36),
+   882→       email: email, emailVerifie d: true,
+   883→       pwHash: sha 1hex(DEMO_P W), // dem o: in produzione Argon2id con salt pe r ute nte
+   884→       nickname: nick, rol e: role, subjectEntityI d: o.subject || null,
+   885→       totpSecret: o.totp || nul l, totpEna ble d: !!o.totp,
+   886→       disable d: fal se, faile dLogins: 0, loc kedUntil: null,
+   887→       createdAt: D(rndI nt(r, 60, 700) ), isDemo: true
+   888→      };
+   889→      db.use rs.push(u);
+   890→      return u;
+   891→    }
+   892→    const uA ria nna = mk Use r(" utente @esem pio.test", "Arianna_ 84", "user", {} );
+   893→    const uA genzia = mkU se r("age nzia@ esem pio.te st", "Il Portico Immobiliare", " use r", { subject: "ent_ag_ portico" });
+   894→    mkUser("moderat ore @esem pio.test", "U fficio Moderazione ", "moderator", { totp: "MFZWIZLTOQ3G K3T FMFZWIZLTOQ3GK 3TF" });
+   895→    mkUser("a dmin@e sempio.test", "Amministrazione ZoomZoom", "a dmin", { totp: " NBS WY3DPFQQFO33S NBS WY3DPFQQFO33S" } );
+   896→    mkUser(" supera dmin@e sem pio.test ", "Super Amministrazione", "supera dmin", { totp: "M FRGG ZDFMZTWQ2LKM FRGGZDFM ZTWQ2LK" } );
+   897→    const NICKS = ["MarcoT_ 79","Giulia F","Luca_e_Sa ra","CasaPe rDue","Ge ometraCurioso","MartaB"," FerroVie","NuovaCasa 2026","A nnaPa ola"," DavideG 88","Sole Quarto","TreFigl ie","Camilla _R","Viv oInZonaStazione","Pa oloM 1962","LeG iare ","Roberta_C"," Due Bambini","AbitoAlB org o","Se rgioETania ","Primacasa _VS","Micol F"];
+   898→    const rev iewe rs = NICKS.map((n, i) => m kU ser( "recensione" + ( i + 1) + " @" + SITE.demoDoma in, n, "user", {} ));
+   899→    const uMa rco = re view ers[0];
+   900→
+   901→    /* --- entità --- */
+   902→    function mkE nt(id, catId, name, subtitle, zoneId, opts) {
+   903→      const o = opts || {};
+   904→      const e = {
+   905→       id: id, categoryI d: catId, name: name, subtitle: subtitle || null,
+   906→       address: o.a ddre ss || null, zoneI d: zoneId, geo: o.geo || nul l,
+   907→       initialsOnly: !!o.initia ls, verifiedB usiness: !!o.busine ss,
+   908→       ownerU se rId: o.ow ner || null, status: " publ ished",
+   909→       propose dBy: " see d", createdAt: D( rndInt( r, 100, 800)), isDemo: true
+   910→      };
+   911→      db.entitie s.push(e) ;
+   912→      return e;
+   913→    }
+   914→    ZONES.forEach(z => m kEnt("e nt_z_" + z.id, "zona", z.name, "Zona di Val serrana (città fittizia)", z.id));
+   915→    mkEnt("ent_ i_rondini", " immobile", "Palazzo delle R ondini", "Edificio reside nzial e", "centro", { addre ss: "Via del Filatoio 14, Val serrana ", geo: { x: 395, y: 300 } });
+   916→    mkEnt("ent_ i_girasole", "imm obile", "Casa G ira sol e", "Appa rtamento", "centro", { addre ss: "Vicol o de i Beccai 3, Valse rra na", ge o: { x: 350, y: 255 } }) ;
+   917→    mkEnt("ent_ i_tigl i8", " immobile", "Re side nza I Tigli 8", "Condominio re sidenz iale", "tig li", { address: "Via le de i Tigli 8, V alse rra na", ge o: { x: 680, y: 190 } }) ;
+   918→    mkEnt("ent_ i_daz io", "imm obile", "Casa del Dazio", "A ppartame nto", " stazione", { addre ss: "Piazza del Dazio 2, Valse rra na", ge o: { x: 300, y: 440 } }) ;
+   919→    mkEnt("ent_ i_fiume", " immobile", "Ca sa sul Fiume", "A ppartame nto con vista ", "borgo", { addre ss: "Lung ofiume A ltino 21, Valse rra na", ge o: { x: 640, y: 395 } }) ;
+   920→    mkEnt("ent_ i_cilieg io", " immobile", "V illa Cil iegio", "Vill a unifamilia re", "col lina", { addre ss: "Via dei Cil iegi 45, Val ser rana ", geo: { x: 895, y: 170 } });
+   921→    mkEnt("ent_ p_gm", " proprietario", "G. M.", "Proprietario di immobili in a ffitt o — Centro Storico", "centro", { initial s: true });
+   922→    mkEnt("ent_ p_l b", " proprietario", " L. B.", "Proprietario di immobili in affitto — Borgo Fiume", "borg o", { initial s: true });
+   923→    mkEnt("ent_ p_rt ", "proprieta rio", "R. T.", "Proprietario di immobili in affitto — Qua rtiere dei Tig li", "tigl i", { initial s: true });
+   924→    mkEnt("ent_a_mc", "a ffittuario", "M. C.", "Affittuario — Ce ntro Storico", "centro", { initial s: true });
+   925→    mkEnt("ent_a_ sd", "affittuario", "S. D.", "A ffitt uario — Zona Stazione", "stazione ", { initial s: true });
+   926→    mkEnt("ent_am_ se reni", "amminist ratore", "Condom ini Sere ni", "St udio di amministrazione condominiale ", "centro", { addre ss: "Via del Filatoio 30, Valserra na" });
+   927→    mkEnt("ent_am_ ferretti", "amministratore", "St udio Fe rretti Condomini", "Amm inistraz ione condom iniale", " stazione", { addre ss: "Piazza del la Stazione 8, Val serra na" });
+   928→    mkEnt("ent_am_ gcv", "amminist ratore ", "Gestioni Condom iniali Val se rra na", "Amministrazione condominia le", "borg o", { addre ss: "Via degl i Orti 12, Val serra na" });
+   929→    mkEnt("ent_a g_portico", "agenzia", "Il Portico Immobil iare", "A genzia di interme diazione (account verificato) ", "centro", { a ddre ss: "Piazza del Mercato 4, Valse rra na", business: true, ow ner: uAge nzia.id });
+   930→    mkEnt("ent_a g_casa nova ", "agenzia", "Casa Nova St udio Immobilia re", "Age nzia di interme diazione ", "tigli", { a ddre ss: "V iale dei Tigl i 22, Valse rra na" } );
+   931→    mkEnt("ent_a g_chiav i", "age nzia", " Le Chiav i Bia nche", "Age nzia di interme diazione ", "stazione", { a ddress: "V ia de lla Croce 7, Val serra na" });
+   932→    mkEnt("ent_ d_va lli", " ditta", "Impresa E dile Fratel li Vall i", "Lav ori edili e ristrutturazioni", "borgo", { addre ss: "Via de i Mug nai 9, Valse rra na" }) ;
+   933→    mkEnt("ent_ d_ pezzoli", "ditta", "Ge om. Pezzoli — Perizie e catast o", "Professionista tecnico", "centro", { addre ss: "Via del Filatoio 2, Valse rra na" });
+   934→    mkEnt("ent_ d_ fiamma", " ditta", "Fiamma Blu Impiant i", "Impia nti idra ul ici e termici", "tig li", { address: "Via dei Plata ni 18, Val serrana " });
+   935→    mkEnt("ent_ d_g rill o", " ditta", "Il Grillo — T raslochi e piccol i lavori", "T raslochi e manutenzione l eggera ", "stazione", { a ddress: "V ia Al do Moro 3, Val serra na" });
+   936→
+   937→    /* --- recensioni ge ne rate (con e sperie nza associata ) --- */
+   938→    const TARGETS = [
+   939→     ["ent_i_rondini", 5, 7.8], ["ent_ i_girasole", 3, 6. 4], ["ent_i_t igli8", 4, 8.2],
+   940→     ["ent_i_dazio", 2, 5. 5], ["ent_i_ fiume", 3, 8. 6], ["ent_i_ciliegio", 1, 9.0],
+   941→     ["ent_z_centro", 12, 7. 9], ["ent_z_borg o", 6, 8. 1], ["ent_z_tigl i", 8, 7. 2],
+   942→     ["ent_z_stazione", 7, 5. 9], ["ent_z_coll ina ", 4, 7.5], ["e nt_z_pa rco", 5, 6. 8],
+   943→     ["ent_p_gm", 4, 8.3], ["ent_ p_l b", 2, 4. 5], ["ent_ p_rt", 3, 6. 0],
+   944→     ["ent_a_mc", 2, 8.5], ["ent_a_ sd", 1, 5.0],
+   945→     ["ent_am_sere ni", 9, 8.7], ["e nt_am_fe rretti", 4, 5.2], ["ent_am_ gcv", 3, 6.8],
+   946→     ["ent_ag_portico", 11, 7. 4], ["ent_ag_ca sanova", 5, 6.1], ["ent_ag_c hiav i", 2, 3. 8],
+   947→     ["ent_d_val li", 6, 8.8], ["ent_ d_ pezzoli", 3, 7.0], ["ent_ d_ fiamma", 4, 6.3], ["ent_ d_grill o", 2, 8. 0]
+   948→    ];
+   949→    const UPDATE_REA SONS = ["Ho corretto un dettaglio dopo la pubbl icazione.", "Aggiorname nto dopo l'interve nto di ma nute nzione p rome sso.", "Precisazione sui tempi di risposta."];
+   950→    function shuffle (arr) { const a = arr.sl ice(); for ( let i = a.le ngth - 1; i > 0; i--) { const j = Math.floor( r() * ( i + 1)); [a[i], a[j]] = [a[j], a[i]]; } ret urn a; }
+   951→
+   952→    TARGETS.forEach( function (t, ti) {
+   953→     const entId = t[0], count = t[1], target = t[ 2];
+   954→     const ent = db.e ntitie s.find(e => e.id === e ntId);
+   955→     const cat = catById(ent.categoryId);
+   956→     let pool = shuffl e(rev iewe rs);
+   957→     if (entId === "e nt_ag_portico") pool = [uMa rco].concat(pool.filte r( u => u !== uMarco));
+   958→     if (entId === "e nt_z_centro" || entId === "e nt_ d_vall i") pool = [ uArianna].concat( pool.filter( u => u !== uA ria nna));
+   959→     for (let i = 0; i < count; i++) {
+   960→       const author = pool[i % pool.le ngth];
+   961→       const daysAgo = rndI nt(r, 5, 560);
+   962→       const exp = {
+   963→         id: "exp_s_ " + ti + "_" + i, entityId: entId,
+   964→         kind: rndPick(r, cat.expKinds), period: String( 2024 + rndI nt(r, 0, 2)),
+   965→         origin: e ntId === "ent_ag _portico" && i === 0 ? "busine ss" : " seed",
+   966→        clientEmail: a uthor.email, userI d: aut hor.id, status: "active",
+   967→        createdAt: D( day sAgo + rndI nt(r, 5, 45)), claime dAt: D(da ysA go), isDemo: true
+   968→       };
+   969→       db.experiences. push(ex p);
+   970→       const score = clamp( roundHal f(target + (r() - 0. 5) * 3), 0.5, 10) ;
+   971→       const crit = {};
+   972→       cat.criteria.forEach(c => { crit[c.id] = clam p(roundHalf( score + ( r() - 0.5) * 3), 0.5, 10); }) ;
+   973→       const ph = PRICE_HINTS[entId];
+   974→       const price = (ph && catHasPrice(cat))
+   975→         ? { amount: rndI nt(r, ph[0], ph[ 1]), unit: ph[ 2], kind: r() < 0.6 ? "C oncl uso/ pagato" : r() < 0.5 ? "Richiest o" : "Propost o/o ffe rta" }
+   976→         : null;
+   977→       const nPros = rndInt( r, 1, 3), nCons = rndInt(r, 1, 2);
+   978→       const pros = shuffl e(DEMO_TEXTS[cat.id].pros).sl ice(0, nPros);
+   979→       const cons = shuffle(DEMO_TEXTS[cat.id].cons). slice( 0, nCons);
+   980→       const hasUpdate = r() < 0.14;
+   981→       db.reviews.push( {
+   982→         id: "rev_" + ti + "_" + i, expe rie nceId: ex p.id, e ntityId: e ntId, userId: aut hor.id,
+   983→         score: score, criteria: crit, pros: pros, cons: cons, price: price,
+   984→         text: rndPick( r, DEMO_TEXTS[cat.id].bodie s),
+   985→         status: "publishe d", hiddenReason: null,
+   986→         verified: t rue, create dAt: D( day sAgo),
+   987→         updatedAt: hasUpdate ? D(Math.max( 1, day sAgo - rndInt(r, 2, 20))) : nul l,
+   988→         updateReason: ha sU pdate ? rndPick (r, UPDATE_REAS ONS) : nul l, isDemo: true
+   989→       });
+   990→     }
+   991→    });
+   992→
+   993→    /* --- una recensione na scosta dalla mode razione (e sempio di decisione registrata) --- */
+   994→    const casa nova Rev = db.revie ws.find(x => x.e ntityId === "e nt_ag_casa nova ");
+   995→    casanova Rev.status = "hidden";
+   996→    casanova Rev.hiddenReason = "Contenuto prom ozionale ripetuto, priv o di esperienza diretta ( decisione di moderazione ).";
+   997→    const hidde nRep = db.rev iew s.find(x => x.entityI d === "e nt_am_ ferretti");
+   998→
+   999→    /* --- esperie nza in attesa di verifica (fl usso richie sta ute nte) --- */
+
+[showing lines 560-999 of 4746; use offset=1000 with limit to continue reading]

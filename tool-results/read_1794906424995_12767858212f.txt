@@ -1,0 +1,302 @@
+  2360→   title: "Pagina non t rovata",
+  2361→   html: '<div class="conta ine r section" ><h1>Pag ina non trovata</ h1><p>Il coll egament o non corrisponde a nessuna pagina. <a hre f=" #/" >Torna al la home</a >.</ p></ div >'
+  2362→  };
+  2363→}
+  2364→
+  2365→/* ---------------- Pagina categoria ---------------- */
+  2366→function vie wCategory (sl ug) {
+  2367→  const cat = catBySlug (slug) ;
+  2368→  if (!cat) return view 404( );
+  2369→  const ent s = DB().ent ities. filte r(e => e.categoryI d === cat.id && e.status === " publishe d");
+  2370→  const nrev = e nts. reduce((t, e) => t + statsFor(e.id).n, 0);
+  2371→  const top = ra nking For(cat.id). filte r(x => x.n > 0).slice(0, 3);
+  2372→  const html =
+  2373→    crumbs([{ labe l: "Home", href: "#/" }, { la bel: "Categ orie " }, { labe l: cat.name }]) +
+  2374→    '<div class="container" >' +
+  2375→    '<div class=" section- hea d" sty le="pa dding-top: 22px "><div ><div cla ss=" row">' +
+  2376→    '<spa n class="cat-ico" styl e=" backg round:' + cat.hex + ';col or:# fff; borde r-ra dius: 10px; pa dding:9px; display:inl ine- flex" >' + ic onS vg(cat.icon, 26) + "</ span>" +
+  2377→    "<div ><h1 sty le=\ "margin: 0\" >" + esc(cat.name) + "</ h1>" +
+  2378→    '<p class=" sub" style ="ma rgin:2px 0 0" >' + e sc(cat.desc) + "</ p></ div ></div ></ div >" +
+  2379→    '<div ><span cla ss=" pil l pill-gra y">' + ent s.length + " sche de </spa n> <spa n class=\ "pill pill-g ray\" >" + nrev + " recensioni verificate</span></div ></ div >" +
+  2380→    (cat.person ? '<div class="a lert ale rt-warn" ><b>Privacy delle persone.</b> Questa categoria rigua rda persone fisiche: le sche de sono identificate solo con inizia li e zona di attiv ità, senza indirizzi né ma ppe. Se una sche da ti rig ua rda e ritie ni che i contenuti sia no errati, puoi <a href=" #/m ode razione" >contestare l \'associazione </a > tramite il modul o de dicato.</div>' : " ") +
+  2381→    '<div class="card mb2" ><h3 style ="ma rgin-top: 0" >Crite ri di val utazione specifici pe r que sta categoria </ h3>' +
+  2382→    "<p class=\"sma ll mb1\" >Og ni categoria ha domande proprie, valutate da 0 a 10 e mostrate come media pe r criterio accanto a l puntegg io com ple ssivo. Non ve ng ono riusate automaticame nte tra categorie diverse.</ p>" +
+  2383→    '<ol class="mb0" sty le="pa dding-left: 20px" >' + cat.criteria.map(c => " <li><b>" + e sc(c.label ) + " </b></li>").j oin("" ) + " </ol ></div >" +
+  2384→    (top.lengt h ? '<div class=" section-hea d" ><div><h2>Migl iori 3 della categoria </h2><p class="sub">Pe r media ponderata, con sog lia minima di ' + DB().setting s.minR evie ws + " recensioni.</ p></ div ></div>" +
+  2385→      '<div class="grid g rid- 3 mb2" >' + top.map( (x, i) => entCardHTML(x.ent, { ra nk : i + 1 })).join("") + "</div>" : "") +
+  2386→    methodNoteBox () +
+  2387→    '<div class=" section- hea d mt3" ><h2>T utte le sche de </h2></ div >' +
+  2388→    '<div class="g rid g rid-3" >' + (ent s.lengt h ? e nts.ma p(e => entCardHTML(e) ).join(" ") : '<div cla ss="a lert ale rt-info" >Nessuna sche da pubblicata in que sta categoria per ora. <a hre f="#/proponi- soggett o">P roponi la prima </a >.</ div >') + "</ div>" +
+  2389→    '<p class="ce nter mt3"><a class="bt bt n-ghost" hre f="#/ proponi- sogg etto" >Proponi un soggetto per que sta categoria</ a></p>' +
+  2390→    "</div >" ;
+  2391→  return { title: cat.name, html: html };
+  2392→}
+  2393→
+  2394→/* ---------------- Scheda entità ---------------- */
+  2395→function rev iewCardHTML(re v, opt s) {
+  2396→  const o = opt s || {};
+  2397→  const aut hor = use rById( rev.use rId);
+  2398→  const cat = o.cat;
+  2399→  const ent = o.ent;
+  2400→  const own = o.user && o.user.id === rev.use rId;
+  2401→  const canU pd = ow n && canUpdateRevie w( o.use r, rev.id).ok;
+  2402→  const updWindowOve r = ow n && !canU pd && rev.stat us === " published";
+  2403→  return '<a rticle class="rev iew" id=" rev-' + e sc(rev.id) + '" >' +
+  2404→    '<div class="re vie w-hea d" ><div cla ss=" revie w-aut hor">' +
+  2405→    '<spa n class="avatar" aria- hidde n="true" >' + e sc((aut hor ? a uthor.nickname : " ?"). slice( 0, 2).toUpperCa se()) + "</span>" +
+  2406→    '<div ><b>' + esc(a uthor ? author. nick name : "A utore ") + " </ b> " + VERIF_BA DGE +
+  2407→    '<div class="re vie w-meta">Pubblicata: ' + fmtMont hYear( rev.createdAt) + (re v.update dAt ? " · ag giornata " + fmtMonthYea r(re v.update dAt) : "" ) + " </div ></ div ></div>" +
+  2408→    '<div class=" score-line" >' + starsSVG( rev.score, { size: 17 }) + ' <spa n class=" score-num" >' + fmt 1(re v.score ) + " <sma ll >/10</smal l></ spa n></ div >" +
+  2409→    "</div >" +
+  2410→    (rev.price ? ' <p cla ss=" revie w-meta mb1" sty le="ma rgin-top:2px" ><b>Prezzo ' + e sc(rev. price.k ind.toLowe rCase() ) + ": </ b> " + fmtInt( rev.price.amount) + " " + e sc(rev. price.unit) + ' <span cla ss="m uted" >( dato dichiarato dal rece nsore, non verificato)</ span></ p>' : "") +
+  2411→    (rev.pros.le ngth || rev.cons.le ngth
+  2412→      ? '<div cla ss=" pc-grid"><div cla ss=" pc-box pc-pros" ><h4>Punti di forza</ h4><ul>' + rev.pros.map( p => " <li>" + esc( p) + " </l i>").join( "") + "</ ul ></div>" +
+  2413→        '<div class=" pc-box pc-cons" ><h4>Crit icità</ h4><ul >' + rev.cons.map(p => " <l i>" + esc( p) + "</ li>").join("") + "</ ul ></div></ div >"
+  2414→      : "") +
+  2415→    '<p class=" review-body mb0">' + esc( rev.text) + " </p>" +
+  2416→    (rev.updateRea son ? ' <p cla ss=" updated- note" >Motivo dell\'agg iorname nto: ' + esc( rev.updateR eason) + " </p>" : " ") +
+  2417→    '<div class="re vie w-foot">' +
+  2418→    (rev.status === " hidde n" ? '<spa n class=" pill pil l-re d" >Na scosta dall a mode razione </spa n>' : "") +
+  2419→    (rev.isDem o ? DEM O_CHIP : "") +
+  2420→    '<spa n class="spacer"></spa n>' +
+  2421→    (own ? ' <a class="bt n bt n-ghost bt n-xs" hre f="#/ rettifica/' + rev.id + '"' + (canUpd ? " " : ' style =" pointe r-event s: none;opacity:.5" title ="Fine stra di rettifica sca duta: contatta la moderazione "') + " >Agg iorna / rettifica </a>" : "") +
+  2422→    (updWindowOve r && !canU pd ? '<spa n class="sma ll mute d" >Fine stra di rettifica concl usa</ span>' : "") +
+  2423→    (o.user && !own ? '<button class=" btn bt n-ghost btn-xs" data-action="re port-revie w" data-revie w="' + e sc(rev.id) + ' ">Se gna la</ button>' : "") +
+  2424→    "</div ></article >" ;
+  2425→}
+  2426→function vie wEntity( id) {
+  2427→  const ent = entByI d(id);
+  2428→  if (!e nt || ent.status !== "publishe d") return v iew 404() ;
+  2429→  const cat = catOfEnt( ent);
+  2430→  const st = statsFor(ent.id);
+  2431→  const pstats = priceStats(e nt.id);
+  2432→  const rev s = DB().re view s.filter( r => r.e ntityId === ent.id).sort((a, b) => ne w Date( b.createdAt) - new Date (a.createdAt)) ;
+  2433→  const user = curre ntUse r();
+  2434→  const hidde nCount = revs. filter(r => r. status === " hidden").length;
+  2435→  const html =
+  2436→    crumbs([{ labe l: "Home", href: "#/" }, { la bel: cat.short, hre f: "#/categoria/" + slug ify(cat.name ) }, { labe l: ent.name }]) +
+  2437→     '<div class="container" >' +
+  2438→     '<div class=" section- hea d" sty le="pa dding-top: 22px ;alig n-items:flex- start" ><div>' +
+  2439→     '<div class="row ">' +
+  2440→     '<spa n class="cat-ico" styl e=" backg round:' + cat.hex + ';col or:# fff; borde r-ra dius: 10px; pa dding:8px; display:inl ine- flex" >' + ic onS vg(cat.icon, 24) + "</ span>" +
+  2441→     "<h1 style =\"ma rgin: 0\" >" + e sc(ent.name) + ' <span style ="w hite- space: nowra p" >' + (e nt.isDemo ? DEMO_CHIP : "") + (e nt.verifie dB usine ss ? ' <spa n class="pill pil l-bl ue" >Sog getto verificato</ spa n>' : "") + "</ span></h1></ div >" +
+  2442→     '<p class=" sub" style ="ma rgin:6px 0 0" >' + chipCat(cat) + " " +
+  2443→     (ent.address ? " <spa n>· " + e sc(ent.a ddress) + "</ span>" : " ") +
+  2444→     (ent.categoryId !== "z ona " ? " · <a href=\"# /zona /ent_z_" + ent.zoneId + '">' + esc(zone Name(e nt.zoneId)) + " </a >" : "" ) +
+  2445→     (ent.subtitle && !ent.addre ss ? " · " + esc(e nt.subtitle ) : "") + "</ p></ div></div >" +
+  2446→     (cat.person ? '<div class="a lert ale rt-warn" ><b>Persona fisica.</ b> Per tutela re la privacy la sche da usa inizial i e zona, senza indirizzo né ma ppa. Chi scriv e ha c onfe rmato un\'e spe rie nza diretta verificata; le a ffe rmazioni resta no opinioni pe rsonali sottoposte a mode razione. <butt on cla ss="l ink" data-action=" dispute-sche da" data-entity ="' + esc(e nt.id) + '">C onte sta l\'associaz ione del la sc heda </ button>. </div >' : "") +
+  2447→     '<div class="g rid" styl e=" grid-template-col um ns: 1fr 320px ;gap:26px " id="e nt-grid" ><div>' +
+  2448→     '<div class=" score- hero m b2">' +
+  2449→     '<div ><div cla ss=" big ">' + (st.mean == null ? "—" : fmt1( st.mean)) + " <smal l>/ 10</ small ></div>" +
+  2450→     '<div class="mute d sma ll" >media complessiva </ div ></div>' +
+  2451→     "<div ><div>" + sta rsSVG(st.mea n, { size: 24 } ) + " </div >" +
+  2452→     '<div class=" score- n">' + (st. n === 1 ? " 1 rece nsione verificata" : st.n + " recensioni verificate") + "</div>" +
+  2453→     (st.n > 0 && !st.sufficie nt ? ' <div class="mt1" >' + insuffC hip(st. n) + " la me dia non è ancora statisticame nte solida</ div >" : " ") + " </ div >" +
+  2454→     (pstats ? ' <div ><div cla ss=" big" style =" font-size: 1.7rem" >' + fmtInt( pstats.median) + " <sma ll> " + esc( pstats.unit) + '</ small ></ div>' +
+  2455→       '<div class="mute d smal l" >mediana dei prezzi dichia rati (' + pstats.n + ')</ div >' +
+  2456→       '<div class="smal l mute d" >inte rval lo ' + fmtInt(pstats.min) + "–" + fmtInt( pstats.max) + " · dato dichia rato, non ve rificato</div ></ div >" : " ") + " </ div >" +
+  2457→     (st.n > 0 ? "<h2>Criteri specifici di que sta categoria </ h2>" + criteriaBarsHTML(st) : ' <div class="ale rt alert -info" >Anc ora nessuna rece nsione: que sta sche da non ha me die o cla ssific he.</ div >') +
+  2458→     methodNoteBox () +
+  2459→     adSlotHTML(" sche da-mid") +
+  2460→     '<div class=" section- hea d mt3" ><h2>Rece nsioni</h2><spa n cla ss=" pil l pill-gray ">' + rev s.filter( r => r.stat us === " published" ).lengt h + " pubblicate" + (hiddenC ount ? " · " + hidde nCount + " nasc oste dalla moderazione" : "" ) + " </ spa n></ div >" +
+  2461→     '<div class="g rid">' +
+  2462→     revs.filte r(r => r.status === "publishe d").ma p(r => revie wCardHTML(r, { cat: cat, ent: ent, use r: use r })).join("") +
+  2463→     (hiddenC ount ? '<div class=" hidden- note" >' + hidde nCount + (hidde nCount === 1 ? " recensione è stata nascosta" : " recensioni sono state na scoste" ) + " dopo una decisione di mode razione docume ntata (ve di <a href=\"#/m ode razione\" >crite ri e a ppe llo</a >).</ div >" : " ") +
+  2464→     "</div ></div >" +
+  2465→     '<aside><div class="card mb2"><h3 style ="margin-top: 0" >Vuoi recensire ' + esc(cat.person ? "questa persona" : " questo sogg etto") + "?</h3>" +
+  2466→     "<p class=\"sma ll\" >Se rvono due condizioni: un account verificato e un' <b>e spe rie nza registrata </b> su Zoom Zoom, che a rriva dal l'invito ema il d i un soggetto ve rificato oppure dalla v erifica docume ntale de lla tua e sperie nza.</ p>" +
+  2467→     '<a class="bt n bt n-primary btn- bloc k" href="#/ verifica-espe rie nza">Ve rifica la tua e spe rie nza</a>' +
+  2468→     '<p class=" smal l muted mt 2 mb0">U na sola rece nsione pe r esperienza; agg iorna bil e con rettifica motivata entro ' + DB ().settings. rettifica Day s + " giorni. </p></div>" +
+  2469→     '<div class="card mb2" ><h3 style ="ma rgin-top: 0" >Problem i con la sche da?</ h3>' +
+  2470→     '<p class=" smal l mb1">E rrori di a ssociazione, conte nuti illeciti o dati personali non a utorizzati si possono seg nala re o cont estare: og ni richie sta è tracciata.</ p>' +
+  2471→     '<button class="bt n bt n-ghost bt n-bl ock mb1" data-action=" dispute-sche da" data-entity ="' + esc(e nt.id) + '" >Conte sta l\'a ssociazione</button>' +
+  2472→     '<p class=" smal l muted m b0">Le rece nsioni si seg nala no dal pul sa nte "Seg nala" pre se nte su ciascuna. <a hre f="#/moderaz ione" >C ome funziona la moderazione </a >.</ p></ div >' +
+  2473→     (cat.mapped && ent.geo ? ' <div class="card"><h3 st yle="marg in-top: 0" >Posizione approssimat iva</h3><p class="smal l mb0">P unt o indicativo sull \'indirizzo pubblico (città fittiz ia). Dall a posizione non si risale a d alcuna informazione sui rece nsori. </p></div>' : "") +
+  2474→     "</aside ></ div ></div>";
+  2475→    return {
+  2476→     title: ent.name,
+  2477→     html: html,
+  2478→     after: function () {
+  2479→       if (window.matchMedia ("(max-w idt h: 1020px)" ).matches) {
+  2480→        const g = $( "#e nt-grid"); if (g) g. style.gridTem plateCol um ns = "1fr";
+  2481→       }
+  2482→     }
+  2483→    };
+  2484→}
+  2485→
+  2486→/* ---------------- Scheda zona (aggreg ati + top 3 per categoria) ---------------- */
+  2487→function vie wZone(z oneE ntId) {
+  2488→  const zEnt = e ntById(z oneE ntId);
+  2489→  if (!zEnt || zEnt.categoryId !== "z ona ") ret urn view 404();
+  2490→  const zone = zoneById(zEnt.zoneI d);
+  2491→  const st = statsFor(zEnt.id);
+  2492→  const user = curre ntUse r();
+  2493→  const { pa rams } = parseHash();
+  2494→  const filterCat = param s.cat || "";
+  2495→  const sum = zoneS ummary(zE nt.zoneI d).filte r( s => s.row s.lengt h && (!filterCat || s.cat.id === filterCat));
+  2496→  const html =
+  2497→    crumbs([{ labe l: "Home", href: "#/" }, { la bel: " Zone", hre f: "#/ma ppa " }, { labe l: zone.name }]) +
+  2498→    '<div class="container" >' +
+  2499→    '<div class=" section- hea d" sty le="pa dding-top: 22px "><div ><h1>Zona ' + esc(zone. name) + " " + (zEnt.isDem o ? DEMO_CHIP : "") + " </ h1>" +
+  2500→    '<p class=" sub" >S inte si agg regata del la zona: val utazioni della zona ste ssa e migliori 3 soggetti per og ni categoria, filtra bil i.</ p></ div ></ div>' +
+  2501→    '<div class="g rid" styl e=" grid-template-col um ns: 1fr 340px ;gap:26px " id="z one-g rid">' +
+  2502→    "<div >" +
+  2503→    '<div class=" score- hero m b2">' +
+  2504→    '<div ><div cla ss=" big ">' + (st.mean == null ? "—" : fmt1( st.mean)) + " <smal l>/ 10</ small ></div><div cla ss=\"m uted small\ ">v oto medio della zona </div ></ div >" +
+  2505→    "<div ><div>" + sta rsSVG(st.mea n, { size: 22 } ) + '</ div><div class="sc ore- n">' + st.n + " rece nsioni della zona </div>" +
+  2506→    (st.n > 0 && !st.sufficie nt ? ' <div class="mt1" >' + insuffC hip(st. n) + " </ div >" : "" ) + " </ div ></ div>" +
+  2507→    (st.n > 0 ? criteriaBarsHTML(st) : ' <div class="ale rt alert-info" >Ne ssuna rece nsione diretta del la zona, ma le sche de sottosta nti ha nno dati aggreg ati.</ div >') +
+  2508→    '<div class=" section- hea d mt3" ><h2>Mig liori 3 pe r categoria in que sta zona</ h2></div>' +
+  2509→    '<div class="row m b2">' +
+  2510→    '<button class="chip chip-filter' + (!filterCat ? " on" : "") + '" data-action="zone-cat" data-cat="" data-zone ="' + zEnt.zoneI d + '" >Tutte </button>' +
+  2511→    CATS.filter(c => c.id !== "zona").ma p(c => '<button class="chip chip- filter' + (filterCat === c.id ? " on" : " ") + '" data-action="zone-cat" data-cat="' + c.id + '" data-zone ="' + zEnt.zoneId + '">' + esc(c.short) + " </button>" ).join(" ") +
+  2512→    "</div >" +
+  2513→    sum.map( s =>
+  2514→      '<div class="mb3" ><div cla ss=" row" sty le="gap:8px" ><span cla ss="chip chip-cat" sty le="--c:' + s.cat.hex + '" >' + iconSv g(s.cat.icon, 13) + esc( s.cat.short) + " </ spa n></ div >" +
+  2515→      '<div class="grid g rid- 3 mt1" >' + s.rows.ma p((x, i) => e ntCardHTML(x.ent, { ra nk: i + 1 }) ).join(" ") + " </ div ></div>").join( "") +
+  2516→    (sum.lengt h === 0 ? ' <div class="ale rt alert-info" >Ne ssun soggetto con recensioni in que sta zona' + ( filterCat ? " pe r la categoria selezionata" : "") + ".</ div >" : " ") +
+  2517→    methodNoteBox () +
+  2518→    '<div class=" section- hea d mt3" ><h2>Rece nsioni della zona </h2></ div >' +
+  2519→    '<div class="g rid">' +
+  2520→    DB().revie ws.filter( r => r.e ntityId === zEnt.id && r.stat us === " published" ).sl ice(0, 3)
+  2521→      .map(r => re viewCa rdHTML( r, { cat: catById("zona"), ent: zEnt, user: user }) ).join(" ") +
+  2522→    '<a class="bt n bt n-ghost" hre f="#/ sche da/' + zEnt.id + '" >Tutte le recensioni e i criteri della zona </a></ div >' +
+  2523→    "</div >" +
+  2524→    '<aside><div class="map- wra p mb2" >' + ma pView portHTML("zone", zEnt.zoneId) + "</ div>" +
+  2525→    '<div class="card" ><h3 style ="ma rgin-top:0" >Dati aggre gati, privacy tutelata </h3><p class="sma ll mb1" >Le va lutazioni di z ona sono mostrate sol o in forma aggreg ata: medie, conteggi e cla ssific he.</ p><p cla ss=" small m b0">Dall a mappa e dai rie pil oghi non è possibile risal ire a chi ha scritto una recensione né a qua ndo è stata scritta. Le persone fisiche non compaiono sull e mappe pubbl iche.</ p></ div >' +
+  2526→    "</aside ></ div ></div>";
+  2527→  return {
+  2528→    title: zone.name,
+  2529→    html: html,
+  2530→    after: function () {
+  2531→      if (window.matchMedia ("(max-w idt h: 1020px)" ).matches) {
+  2532→       const g = $( "#zone-grid" ); if ( g) g.style.g ridTemplateColum ns = " 1fr";
+  2533→      }
+  2534→      bindMa pInteractions($( "#main .map-vie wport" ), zEnt.zoneId) ;
+  2535→    }
+  2536→  };
+  2537→}
+  2538→ACTIONS["zone-cat"] = el => {
+  2539→  const cat = el.getAttribute( "data-cat");
+  2540→  const zone = el.getAttribute(" data-zone ");
+  2541→  location. hash = " #/zona/ent_z_" + zone + (cat ? " ?cat=" + cat : "");
+  2542→};
+  2543→
+  2544→/* ---------------- Classifiche ---------------- */
+  2545→function vie wRankings() {
+  2546→  const { pa rams } = parseHash();
+  2547→  const cat = (pa rams.cat && catById(param s.cat)) ? catById( param s.cat) : CATS[0];
+  2548→  const rows = ra nk ing For(cat.id). filte r(x => x.n > 0);
+  2549→  const suff = rows.filter(x => x. sufficient) ;
+  2550→  const tabs = CATS.map(c => ' <button rol e="ta b" a ria-se lected="' + (c.id === cat.id) + '" data-action="ra nk-cat" data-cat="' + c.id + '">' + esc(c.short) + " </button>").join( "");
+  2551→  const table =
+  2552→   '<div class="table-wra p" ><table cla ss="ta ble" ><caption cla ss=" sr-only ">Cla ssifica ' + esc(cat.name) + "</ca ption>" +
+  2553→   "<thead><tr><t h scope=\ "col\" ># </th><th sc ope =\"col\" >Sche da</t h><th scope=\ "col\" >Media</th><t h scope=\"col\ ">Puntegg io classifiche </t h><th scope =\"c ol\" cla ss=\" num\ ">R ecensioni</th><th sc ope =\"col\" >Affidabilità </th></tr></t head><tbody >" +
+  2554→   rows.ma p((x, i) => {
+  2555→     const rank = x.sufficie nt ? i + 1 : " —";
+  2556→     return " <tr><t d><b>" + ra nk + "</ b></t d><td><a href=\"#/ sche da/" + x.ent.id + "\ ">" + esc(x.e nt.name) + "</a > " + (x.ent.isDemo ? DEMO_CHIP : "") + " <br><spa n cla ss=\" small m uted\" >" + esc(cat.short) + " · " + esc(zone Name(x.ent.zoneId) ) + " </spa n></td>" +
+  2557→       "<td><b>" + (x.mea n == null ? "—" : fmt1(x.mea n)) + "</ b>/10 " + starsSVG(x.mea n, { size: 14 } ) + " </td>" +
+  2558→       "<td>" + (x. weig hted == null ? "      : fmt 1(x.weighte d)) + "</t d>" +
+  2559→       '<td class="num" >' + x.n + " </td><t d>" + (x.sufficie nt ? ' <spa n class=" pill pill-g reen">Dati sufficie nti</spa n>' : insuffChip(x.n) ) + " </td></tr>";
+  2560→   }).join( "") + "</t body></ta ble ></ div >" ;
+  2561→  const html =
+  2562→   '<div class="container" >' +
+  2563→   '<div class=" section- hea d" sty le="pa dding-top: 26px "><div ><h1>Cla ssific he</ h1><p cla ss=" sub" >Come ordiniamo gl i ele nchi — tra spare nza completa sul metodo.</ p></ div ></div>' +
+  2564→   '<div class="method- box m b2" ><h3>Il met odo (visibile e riproducibile)</h3>' +
+  2565→   "<p>Og ni classifica ordina le sche de pe r <b>punteg gio di classifica </b>, una media ponderata: " +
+  2566→   "<code >PC = (n · M + m · C) / ( n + m) </code> dove <code>M </code > è la me dia della scheda, <code>n</c ode > il nume ro di rece nsioni, <code >C</code> l a media dell a categoria e <code >m = " + DB ().setting s.minRe view s + "</code > la soglia m inima di recensio ni. </p>" +
+  2567→   "<p class=\"mb0\" >Con poche rece nsioni il puntegg io re sta vicino al la media del la categoria : così <b>una sola val utazione massima non può conquistare il primo posto</b>. Le sc hede sotto la sog lia (" + DB(). settings.minRev iew s + " recensioni) resta no v isibili ma sono escl use dal podio e segna late con \" dati insufficienti\ ". Qua ndo in una categoria non ci sono a bba stanze sche de con dati sufficie nti, il dato viene mostrat o con que sta avve rtenza i nvece di fingere una classifica solida.</ p></ div >" +
+  2568→   '<div class="tabs" role ="ta blist" >' + tabs + " </ div >" +
+  2569→   (suff.length < 3 && row s.le ngth ? ' <div class="ale rt alert-wa rn">I n questa categoria me no di tre sc hede raggiungono la sog lia di ' + DB ().settings.minRe view s + " recensioni: la classifica è da conside rare indicativa. </div>" : "") +
+  2570→   table +
+  2571→   '<div class=" section- hea d mt3" ><h2>Le zone più apprezzate</h2></ div >' +
+  2572→   '<div class="g rid g rid-3" >' +
+  2573→   rankingFor( "zona").filter( x => x.n > 0).sl ice(0, 3).map((x, i) =>
+  2574→     '<a class="card card-click" hre f="#/zona/' + x.e nt.id + '"><div class="row " style ="ga p: 10px" ><spa n class=" ra nk-num' + ( i === 1 ? " r2" : i === 2 ? " r3" : "") + ' ">' + (i + 1) + "</ span><h3 style =\"ma rgin: 0\" >" + e sc(x.ent.name ) + " </ h3></ div>" + sco reLineHTML(x) + " </a >").j oin("") +
+  2575→   "</div >" +
+  2576→   adSlotHTML("cla ssific he-bott om") +
+  2577→   "</div >" ;
+  2578→  return { title: "Cla ssifiche", html: html };
+  2579→}
+  2580→ACTIONS["ra nk-cat"] = el => { location. hash = " #/classifiche ?cat=" + el.getAttribute( "data-cat"); };
+  2581→
+  2582→/* ---------------- Segnalazione recensione (modale ) ---------------- */
+  2583→ACTIONS["re port-rev iew"] = el => {
+  2584→ const user = curre ntUse r();
+  2585→ if (!use r) { toa st("Accedi per seg nalare una recensione : se rve un account (misure anti-a buso).", "err"); location. hash = "#/accedi"; return; }
+  2586→ const revI d = el.getAttribute(" data-review") ;
+  2587→ openM oda l('<div class="m oda l-hea d" ><h2>Se gnal a la recensione</ h2><button class="m oda l-close" data-action="modal-close" a ria-la bel ="Chiudi" >×</ button></ div >' +
+  2588→   '<form id="re port-form" ><div cla ss=" fie ld" ><la bel for="rep-re ason" >Motivo</la bel ><select id=" rep- reason" re quire d>' +
+  2589→   '<option va lue ="" >— Se leziona un motivo — </option>' + REPORT_ REASONS.map( r => '<opt ion val ue="' + r.id + '" >' + e sc(r.la bel) + " </option>").join( "") + "</ select ></ div >" +
+  2590→   '<div class="fiel d" ><label for="re p-details">Dettagli (alme no 20 caratteri) </la bel ><textarea id="re p-details" required m inl engt h="20" placehol der="S piega il problema: aiuta la moderazione a decidere." ></textarea ><spa n cla ss=" hint">La seg nalaz ione è visibile sol o alla moderaz ione; non è pubbl ica.</spa n></ div >' +
+  2591→   '<div class="row " style ="j ustify-conte nt:flex-e nd"><button type =" button" class=" btn btn-g host" data-action="modal-close" >A nnul la</ butt on><button cla ss=" btn btn-dange r" ty pe="subm it">I nvia segna lazione </button></ div ></ form>',
+  2592→   { label: "Seg nala recensione" } );
+  2593→ $("#re port-form").addEve ntListene r(" submit", ev => {
+  2594→   ev.prevent Defa ult() ;
+  2595→   if (Supa.on()) {
+  2596→     const cu = current Use r();
+  2597→     if (!cu) { toast ("In modal ità online, per seg nalare serve aver e ffett uato l'accesso.", "err"); return; }
+  2598→     Supa.report(cu, { revie wId: re vId, rea son: $(" #re p-rea son").va lue, deta ils: $("# rep- detail s").va lue } ).then(ok => {
+  2599→       if (ok) { closeM oda l(); toa st("Seg nal azione inviata: la m ode razione la va lute rà."); }
+  2600→     });
+  2601→     return;
+  2602→   }
+  2603→   const res = re portRevie w( use r, { revie wId: revId, rea son: $( "#re p-rea son").va lue, detail s: $(" #re p-details" ).val ue });
+  2604→   if (res.ok) { closeModal() ; toast( "Seg nalazione inv iata: stato consulta bile dal tuo profil o."); A pp. render(); }
+  2605→   else toast(res.error, "err");
+  2606→ });
+  2607→};
+  2608→
+  2609→/* ---------------- Contestazione associazione scheda (m oda le, aperta a nche agl i ospiti) ---------------- */
+  2610→ACTIONS[" dispute-sche da"] = el => {
+  2611→ const entI d = el.getAttribute(" data-entity" );
+  2612→ openM oda l('<div class="m oda l-hea d" ><h2>Contesta l\' associazione dell a sche da </h2><button class="modal-close" data-action="m oda l-close " aria-la bel ="C hiudi">×</button></div >' +
+  2613→   '<p class=" smal l muted">Pe r le pe rsone fisiche e i sogg etti che rite ngono e rrata l\'a ssociazione tra la sche da e la propria pe rsona o attività. La richiesta passa alla mode razione: nessuna cancel lazione aut om atica, decisione motivata e possibilità di appell o.</ p>' +
+  2614→   '<form id=" dispute-form" ><input ty pe="hidde n" id=" dis-ent ity" val ue ="' + e sc(entId) + '" >' +
+  2615→   '<div class="fiel d" ><label for="dis-email">La tua ema il di contatto</la bel ><input id=" dis-ema il" ty pe="email" required place hol der=" nome @esem pio.it" ><spa n class=" hint">Usata sol o pe r comunicarti l\'esito: non vie ne pubblicata.</span></div >' +
+  2616→   '<div class="fiel d" ><label for="dis-claim" >Motivo della contestazione (a lmeno 30 caratteri)</ label ><textarea id="dis-claim " require d minlengt h="30" placehol der="Es.: la sche da si riferisce a una persona omonima, non a me."></textarea ></ div >' +
+  2617→   '<div class="row " style ="j ustify-conte nt:flex-e nd"><button type =" button" class=" btn btn-g host" data-action="modal-close" >A nnul la</ butt on><button cla ss=" btn btn-prima ry" ty pe="subm it">I nvia contestazione </ button></ div ></form >',
+  2618→   { label: "Contesta a ssociazione" }) ;
+  2619→ $("#dispute-form ").addEvent Listene r(" submit", ev => {
+  2620→   ev.prevent Defa ult() ;
+  2621→   const res = createDispute ({ email: $("# dis-email" ).value, e ntityId: $ ("# dis-entity" ).val ue, claim: $("# dis-claim").val ue }) ;
+  2622→   if (res.ok) { closeModal() ; toast( "Conte stazione ricevuta: ricevera i l\'esito via ema il."); }
+  2623→   else toast(res.error, "err");
+  2624→ });
+  2625→};
+  2626→
+  2627→/* ---------------- Come funziona ---------------- */
+  2628→function vie wHowItWorks( ) {
+  2629→  const html =
+  2630→   crumbs([{ labe l: "Home", href: "#/" }, { la bel: "C ome funziona " }]) +
+  2631→   '<div class="container" ><div class="legal- body" >' +
+  2632→   '<div class=" section- hea d" sty le="pa dding-top: 22px "><div ><h1>Come funziona la ve rifica</ h1><p cla ss=" sub" >U n metodo tra spare nte, con i suoi limit i dic hiarati.</ p></ div ></ div>' +
+  2633→   '<div class="ale rt alert-ok" ><b>I n sinte si.</ b> S u Zoom Zoom può pubbl icare una rece nsione solo un utente a utent icato che ha ricevut o un <b>inv ito email </ b> collegato a un\'e sperienza re gist rata sulla piattaforma. Il ba dge "e spe rie nza verificata" atte sta l\'esiste nza del l\'invito o del l\' interazione registrata: <b>non gara ntisce che og ni affermazione sia oggettivame nte vera </ b>. </div>' +
+  2634→   "<h2>Le tre fa si</h2>" +
+  2635→   "<h3>1. L'esperienza v iene registrata </h3>" +
+  2636→   "<p>U n'esperienza ( per e sempio un contratto d'affitto, una pratica se guita da un'age nzia, un interve nto di manute nzione) ent ra ne lla piattaforma in due modi: </ p>" +
+  2637→   "<ul ><li><b>S oggetto ve rificato</b> (age nzia, amminist ratore, ditta con account verificato) reg istra l'inte razione e invita i l cliente a recensirla, con lim iti giornalie ri e obbligo di invita re <em >tutti</em > i clie nti de ll'interazione, non solo i so ddisfatti; </li>" +
+  2638→   "<li><b>Ve rifica documenta le</ b>: l'ute nte carica un docume nto che dimostri l'esperienza (contratto, fattura, delibera …); un moderat ore va luta la richie sta e, se sufficie nte, abilita la rece nsione.</ li></ ul >" +
+  2639→   '<div class="ale rt alert-wa rn"><b>Limite dichiarato. </b> Non possiamo e scludere in a ssol uto se lezioni va ntaggiose da parte de i soggetti che invita no, né la creazione di account multipl i: applic hiamo limiti, monitoraggio e moderazione, ma nessun sistema di verifica è perfetto. Segna lazioni e cont rol li riducono il rischio.</ div >' +
+  2640→   "<h3>2. L'invito è un toke n sic uro</ h3>" +
+  2641→   "<p>L'invit o email contie ne un collegame nto con un tok en casuale a <b>uso singolo</b>, con <b>sca de nza</ b> ( " + DB ().settings. inv iteExpiryDays + " giorni), colle gato all' indirizzo email del destinatario. I toke n sono confrontati tram ite ha sh: nemme no gli amm inistrat ori li riutil izzano. Ogni uso, scadenza o te ntativo non val ido vie ne reg istrat o tra gli ev enti di sicurezza. Gli inv iti in massa sono impedit i da l imiti di frequenza e da una soglia oltre l a quale se rve a pprovaz ione del la moderazione. </p>" +
+  2642→   "<h3>3. Una recensione per e spe rie nza</ h3>" +
+  2643→   "<p>Og ni ute nte può scrive re <b>una sola rece nsione pe r espe rie nza</ b>. La recensione è aggiorna bile con una rettifica motiv a ta entro " + DB().setting s.rettificaDay s + " g iorni; dopo, occorre riv olgersi al la moderazione, che va luta le richieste di correzione con tracciatura dell e decisioni. </p>" +
+  2644→   "<h2>Cosa cont iene una recensione </ h2>" +
+  2645→   "<p>P unteg gio com ple ssivo da 0 a 10 mostrat o con stelle e val ore nume rico; puntegg i pe r i criteri <b>specifici della categoria </ b> (le doma nde pe r un immobile rig uarda no ma nute nzione e rumori, quelle per un'age nzia tra spare nza e gestione del la pratic a: non ve ng ono riusate tra categorie) ; punti di forza ; criticità; dove pertine nte, il <b>prezzo richiest o, proposto o concl uso</ b> con il criterio di ra pport o qualità-prezzo (il prezzo è un dato dichiarat o dal recensore: non v iene verificato, ed è sempre mostrato come tale) ; de scrizione dell'e sperienza; dichiarazione di ve ridic ità e di asse nza di dati pe rsonali di terzi. </p>" +
+  2646→   "<h2>Cla ssific he: il metodo</ h2>" +
+  2647→   methodNoteBox () +
+  2648→   "<h2>Cosa non facciamo</h2>" +
+  2649→   "<ul ><li>Ne ssun annuncio di imm obili in ve ndita o affitto; </l i><li>Nessun a ppuntamento, pre notazione o messaggistica tra ute nti; </li><li>Nessun pagament o o se rvizio premium in que sta ve rsione;</ li><li>Ne ssuna vendita di posizioni: la pubblicità, qua ndo attiva, non influe nza punte ggi, medie né ordine dei risultati.</ li></ ul >" +
+  2650→   "<h2>Modera, segnala, conte sta</ h2>" +
+  2651→   "<p>Og ni rece nsione ha un pulsa nte \"Seg nala \" (per ute nti a utenticati) e ogni sche da permette di conte stare l'a ssociazione a una persona o e ntità. Il flusso completo — stati, tempi, decisioni, a ppe llo — è desc ritto nella pagina <a hre f=\"#/mode razione\" >Moderazione e contestazioni</a>.</ p>" +
+  2652→   "<h2>S icurezza e privacy: impostazione one sta</ h2>" +
+  2653→   "<p>L'area amministrativa è se parata dal sito pubblico, ric hie de aute nticazione con 2FA obbl igatoria e reg istra ogni azione i n un log riservat o. Le pa ssword sono salvate sol o come ha sh ( nel prototipo SHA-1 per semplicità: in produz ione Arg on2id con salt e pa rametri adeg uati). I dati dei recensori (email, ide ntità) non ve ng ono mai mostrati pubblicamente: le recensioni most ran o solo l o pseudonim o scelto. Que sto prot otipo è un file statico che g ira nel tuo brow se r: in produzione l e stesse re gole sono a pplicate dal serv er, con HTTPS, protezioni CSRF/XSS /SQL injection, rate limiting e back up. Nessun sistema è imm une da attacchi: docume ntiamo le misure e le verifiche ancora nece ssa rie.</ p>" +
+  2654→   "</div ></div >";
+  2655→  return { title: "Come funziona", html: html } ;
+  2656→}
+  2657→
+  2658→/* ---------------- Pagina informativa ge nerica ---------------- */
+  2659→const LEG AL_ NOTE = ' <div class="lega l-note "><b>Nota sul lo stat o del docume nto. </b> Test o predisposto per il prototipo dimostrativo: <b>non costit uisce consule nza legal e</ b> e non dichia ra conformità. Prima del la ncio va sottoposto a rev isione professiona le (GDPR, ePrivacy, normat iva italia na e UE su recensioni e consumat ori, re golame nto sui servizi digital i) e integrato con i dat i de l titola re del trattamento e ffettiv o.</ div >';
+
+[showing lines 2360-2659 of 4746; use offset=2660 with limit to continue reading]
