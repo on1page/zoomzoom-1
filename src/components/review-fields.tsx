@@ -3,7 +3,7 @@
 // valutazioni per criterio, prezzo dichiarato, punti di forza, criticità e
 // descrizione. Usati sia dalla via invito/verifica sia dal contributo aperto:
 // una sola fonte di verità per la struttura del form.
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { fmt1 } from "@/lib/client/api";
 
 export type ReviewFormCore = {
@@ -22,6 +22,29 @@ export function ReviewFields<T extends ReviewFormCore>({ cat, form, setForm }: {
   form: T;
   setForm: Dispatch<SetStateAction<T>>;
 }) {
+  // il selettore "Periodo" mostra la prima unità quando lo stato è vuoto:
+  // lo stato deve corrispondere a ciò che l'utente vede, altrimenti l'invio
+  // con il solo importo compilato verrebbe rifiutato (unità mancante)
+  useEffect(() => {
+    if (cat.priceUnits.length && !form.priceUnit) {
+      setForm(f => ({ ...f, priceUnit: cat.priceUnits[0] }));
+    }
+  }, [cat.priceUnits, form.priceUnit, setForm]);
+
+  // gli slider mostrano 5 quando un criterio non è mai stato toccato: quel 5
+  // deve esistere anche nello stato, altrimenti il criterio non viene inviato
+  // e il server rifiuta la recensione con "Valutazione mancante o non valida
+  // per: …" (basta NON muovere uno slider per farlo scattare). Questo effetto
+  // scrive nello stato, una sola volta, lo stesso 5 che è già a schermo.
+  useEffect(() => {
+    if (cat.criteria.some(c => form.crit[c.key] == null)) {
+      setForm(f => {
+        const crit = { ...f.crit };
+        for (const c of cat.criteria) if (crit[c.key] == null) crit[c.key] = 5;
+        return { ...f, crit };
+      });
+    }
+  }, [cat.criteria, form.crit, setForm]);
   return (
     <>
       <div className="field">
@@ -57,7 +80,8 @@ export function ReviewFields<T extends ReviewFormCore>({ cat, form, setForm }: {
             </div>
             <div className="field mb0" style={{ flex: 1, minWidth: 110 }}>
               <label htmlFor="rv-price-unit">Periodo</label>
-              <select id="rv-price-unit" value={form.priceUnit || cat.priceUnits[0]} onChange={e => setForm(f => ({ ...f, priceUnit: e.target.value }))}>
+              <select id="rv-price-unit" value={form.priceUnit || cat.priceUnits[0]}
+                onChange={e => setForm(f => ({ ...f, priceUnit: e.target.value }))}>
                 {cat.priceUnits.map(u => <option key={u} value={u}>{u}</option>)}
               </select>
             </div>
