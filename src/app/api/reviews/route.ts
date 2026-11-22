@@ -30,6 +30,10 @@ type OpenReviewPayload = ReviewPayload & {
   entityId?: string;
   experienceKind?: string;
   photos?: unknown;
+  // privacy per recensione: di default sulla recensione compare SOLO la
+  // categoria dell'autore; il flag autorizza esplicitamente anche nickname
+  // e foto profilo per questa singola recensione
+  showIdentity?: boolean;
 };
 
 export async function POST(req: Request) {
@@ -43,7 +47,10 @@ export async function POST(req: Request) {
     let entityId: string;
     let verified: boolean;
     let isDemo: boolean;
-    let experienceId: string;
+    // via invito: esperienza già esistente; contributo aperto: viene creata
+    // DOPO la validazione del payload, così un errore di input non lascia
+    // esperienze orfane nel database
+    let experienceId: string | null = null;
     let kindLabel = "";
 
     if (p.experienceId) {
@@ -84,17 +91,10 @@ export async function POST(req: Request) {
       }
       const dup = await db.review.findFirst({ where: { entityId, userId: user.id, status: "published" }, select: { id: true } });
       if (dup) return fail("Hai già scritto una recensione su questa scheda: puoi aggiornarla con una rettifica motivata.", 409);
-      // l'esperienza dichiarata nasce attiva e resta legata all'utente
-      const exp = await db.experience.create({
-        data: {
-          entityId, kind: kindLabel, origin: "self",
-          clientEmail: user.email, userId: user.id, status: "active", isDemo: user.isDemo,
-        },
-      });
+      // l'esperienza dichiarata viene creata dopo la validazione (più sotto)
       entityId = ent.id;
       verified = false;
       isDemo = user.isDemo;
-      experienceId = exp.id;
     }
 
     const ent = await db.entity.findUnique({ where: { id: entityId } });
@@ -104,6 +104,18 @@ export async function POST(req: Request) {
     const val = validateReviewPayload(p, cat);
     if (!val.ok) return fail(val.error);
 
+    // contributo aperto: ora che il payload è valido, l'esperienza dichiarata
+    // nasce attiva e resta legata all'utente
+    if (!experienceId) {
+      const exp = await db.experience.create({
+        data: {
+          entityId, kind: kindLabel, origin: "self",
+          clientEmail: user.email, userId: user.id, status: "active", isDemo: user.isDemo,
+        },
+      });
+      experienceId = exp.id;
+    }
+
     const versionId = await snapshotCategoryVersion(cat.id);
     const review = await db.review.create({
       data: {
@@ -112,6 +124,8 @@ export async function POST(req: Request) {
         prosJson: JSON.stringify(val.pros), consJson: JSON.stringify(val.cons),
         priceAmount: val.price?.amount ?? null, priceUnit: val.price?.unit ?? null, priceKind: val.price?.kind ?? null,
         text: val.text, status: "published", verified, isDemo,
+        // snapshot della categoria d'appartenenza + flag privacy (default: anonima)
+        authorCategory: user.categoryId, showIdentity: p.showIdentity === true,
       },
     });
 
