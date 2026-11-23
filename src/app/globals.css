@@ -61,7 +61,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
 .brand-name { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 700; color: var(--navy); letter-spacing: .2px; }
 .brand-name b { color: var(--gold-strong); font-weight: 700; }
 .main-nav { display: flex; align-items: center; gap: 4px; }
-.main-nav a, .main-nav button.navlink { display: inline-block; padding: 8px 11px; border-radius: var(--radius-s); text-decoration: none; color: var(--ink); font-size: .95rem; background: none; border: 0; font-family: inherit; cursor: pointer; }
+.main-nav a, .main-nav button.navlink { display: inline-block; padding: 8px 11px; border-radius: var(--radius-s); text-decoration: none; color: var(--ink); font-size: .95rem; background: none; border: 0; font-family: inherit; cursor: pointer; white-space: nowrap; }
 .main-nav a:hover, .main-nav button.navlink:hover, .main-nav a.active { background: var(--navy-mist); color: var(--navy); }
 .nav-dd { position: relative; }
 .nav-dd-panel { position: absolute; top: calc(100% + 6px); left: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-2); padding: 10px; min-width: 320px; display: none; z-index: 130; }
@@ -109,9 +109,9 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1.5em 0; }
 
 /* ---------- Hero ---------- */
 .hero { background: linear-gradient(180deg, var(--navy-deep), var(--navy)); color: #EAF0F7; padding: 54px 0 58px; }
-.hero h1 { color: #fff; font-size: 2.3rem; max-width: 720px; margin-bottom: .4em; }
+.hero h1 { color: #fff; font-size: clamp(2.4rem, 6vw, 6.25rem); max-width: 1020px; margin-bottom: .35em; line-height: 1.06; letter-spacing: -.5px; }
 .hero h1 em { color: var(--gold); font-style: normal; }
-.hero p.lead { color: #C6D3E1; max-width: 640px; font-size: 1.06rem; }
+.hero p.lead { color: #C6D3E1; max-width: 680px; font-size: 1.12rem; }
 .hero-box { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius); padding: 22px; margin-top: 26px; }
 .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
 .hero-badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #DCE6F0; font-size: .82rem; padding: 5px 11px; border-radius: 999px; display: inline-flex; gap: 7px; align-items: center; }
@@ -416,6 +416,22 @@ table.table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 .step h3 { margin-top: 8px; font-size: 1rem; }
 .step p { font-size: .88rem; color: var(--ink-soft); margin: 0; }
 
+/* ---------- Città Zoom ---------- */
+.city-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.city-card { display: flex; flex-direction: column; justify-content: space-between; gap: 22px; background: linear-gradient(165deg, var(--navy-deep), var(--navy-soft)); border: 1px solid rgba(255,255,255,.16); border-radius: var(--radius); padding: 24px; text-decoration: none; color: #EAF0F7; box-shadow: var(--shadow-1); min-height: 190px; transition: border-color .15s, box-shadow .15s, transform .15s; }
+.city-card:hover { border-color: var(--gold); box-shadow: var(--shadow-2); transform: translateY(-2px); color: #fff; }
+.city-region { font-size: .78rem; text-transform: uppercase; letter-spacing: .8px; color: var(--ink-soft); }
+.city-card .city-region { color: #A9BACB; }
+.city-card h3 { font-family: var(--font-serif); font-size: 2rem; color: #fff; margin: 2px 0 0; line-height: 1.1; }
+.city-card .city-stats { font-size: .85rem; color: #C6D3E1; margin: 0; }
+.city-card .city-stats b { color: #fff; }
+.city-card .city-cta { font-size: .9rem; color: var(--gold); font-weight: 600; }
+.city-chip-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; align-items: center; }
+.city-chip { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 16px; text-decoration: none; font-size: .9rem; color: var(--ink); display: inline-flex; gap: 8px; align-items: center; }
+a.city-chip:hover { border-color: var(--gold-strong); color: var(--navy); }
+.city-chip .n { color: var(--ink-soft); font-size: .78rem; }
+.city-chip.city-soon { background: var(--paper); border-style: dashed; color: var(--ink-soft); cursor: default; }
+
 /* ---------- Posta demo ---------- */
 .mail-item { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 12px; overflow: hidden; }
 .mail-head { padding: 10px 16px; background: var(--paper); border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: .82rem; color: var(--ink-soft); }
@@ -434,19 +450,29 @@ table.table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 @media (max-width: 1020px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .city-grid { grid-template-columns: repeat(2, 1fr); }
   .grid-side { grid-template-columns: 1fr; }
   .admin-shell { grid-template-columns: 1fr; }
   .admin-side { position: static; border-radius: var(--radius); margin-bottom: 16px; }
   .admin-main { padding-left: 0; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
+/* Tra 861px e 1290px il menu rischia di andare a capo con tutte le voci
+   (Cerca casa, Cerca, Mappa, Classifiche, Categorie, Come funziona):
+   lo compattiamo per tenerlo su una riga. */
+@media (min-width: 861px) and (max-width: 1290px) {
+  .header-inner { gap: 12px; }
+  .main-nav { gap: 2px; }
+  .main-nav a, .main-nav button.navlink { padding: 8px 7px; font-size: .9rem; }
+}
 @media (max-width: 860px) {
   .main-nav { display: none; }
   .header-actions .btn-accedi { display: none; }
   .burger { display: inline-flex; }
   .grid-3 { grid-template-columns: 1fr; }
+  .city-grid { grid-template-columns: 1fr; }
   .steps { grid-template-columns: 1fr; }
-  .hero h1 { font-size: 1.7rem; }
+  .hero h1 { font-size: clamp(2.05rem, 8.5vw, 2.6rem); letter-spacing: 0; }
   .pc-grid { grid-template-columns: 1fr; }
   .score-hero .big { font-size: 2.3rem; }
 }

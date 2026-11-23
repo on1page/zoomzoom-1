@@ -7,6 +7,7 @@ import { useHashRoute } from "@/lib/client/router";
 import { CookieBanner, DemoBar, Footer, Header, Toasts } from "@/components/chrome";
 import { HomeView } from "@/components/views/home";
 import { SearchView } from "@/components/views/search";
+import { CercaCasaView } from "@/components/views/cerca-casa";
 import { CategoryView, MapView, RankingsView } from "@/components/views/map-rankings-category";
 import { EntityView, ZoneView } from "@/components/views/entity-zone";
 import { ContactsView, CookieView, HowItWorksView, MailboxView, ModerationView, NotFoundView, PremiumView, PrivacyView, ReviewRulesView, TermsView } from "@/components/views/info-pages";
@@ -29,6 +30,7 @@ function Router() {
   const view = (() => {
     switch (segs[0]) {
       case undefined: return <HomeView />;
+      case "cerca-casa": return <CercaCasaView />;
       case "cerca": return <SearchView />;
       case "mappa": return <MapView />;
       case "classifiche": return <RankingsView />;

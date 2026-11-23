@@ -123,6 +123,7 @@ export function Header() {
             <span className="brand-name">{nameParts}</span>
           </a>
           <nav className="main-nav" aria-label="Navigazione principale">
+            <a href="#/cerca-casa" className={active("cerca-casa")}>Cerca casa</a>
             <a href="#/cerca" className={active("cerca")}>Cerca</a>
             <a href="#/mappa" className={active("mappa")}>Mappa</a>
             <a href="#/classifiche" className={active("classifiche")}>Classifiche</a>
@@ -149,6 +150,7 @@ export function Header() {
       </header>
       <div className={`mobile-nav${mobileOpen ? " open" : ""}`}>
         {boot?.site.openReviewsEnabled ? <a className="mobile-cta" href="#/recensione" onClick={() => setMobileOpen(false)}>Scrivi una recensione</a> : null}
+        <a href="#/cerca-casa" onClick={() => setMobileOpen(false)}>Cerca casa</a>
         <a href="#/cerca" onClick={() => setMobileOpen(false)}>Cerca</a>
         <a href="#/mappa" onClick={() => setMobileOpen(false)}>Mappa</a>
         <a href="#/classifiche" onClick={() => setMobileOpen(false)}>Classifiche</a>
@@ -320,6 +322,7 @@ export function Footer() {
           </div>
           <div>
             <h4>Il progetto</h4>
+            <a href="#/cerca-casa">Cerca casa</a>
             <a href="#/come-funziona">Come funziona la verifica</a>
             <a href="#/premium">Membership Premium</a>
             <a href="#/cerca">Cerca un soggetto</a>
