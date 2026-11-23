@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireStaff } from "@/lib/server/auth";
 import { updateSettings, invalidateSettingsCache } from "@/lib/server/settings";
+import { backfillZoneGeo } from "@/lib/server/zone-geo";
 import { revokePremiumForReview, restorePremiumForReview, grantPremiumManually, revokeAllPremium } from "@/lib/server/premium";
 import { sendMail } from "@/lib/server/mailer";
 import { auditLog, securityLog } from "@/lib/server/audit";
@@ -304,6 +305,20 @@ export async function POST(req: Request) {
         await db.entity.update({ where: { id: ent.id }, data: { status: next } });
         await auditLog({ actorId: actor.id, actorRole: actor.role, action: next === "published" ? "Scheda pubblicata" : "Scheda nascosta", targetType: "entity", targetId: ent.id, reason: reason || null, isDemo: ent.isDemo });
         return NextResponse.json({ ok: true });
+      }
+
+      /* ---- catalogo: geografia delle città (mappa delle reputazioni) ---- */
+      case "zone.geoBackfill": {
+        const actor = await requireStaff("admin.entities");
+        const report = await backfillZoneGeo();
+        await auditLog({
+          actorId: actor.id, actorRole: actor.role,
+          action: "Geografia delle città completata",
+          targetType: "zone",
+          targetId: `completate:${report.completate.length};non-risolte:${report.nonRisolte.length}`,
+          reason: reason || "Provincia e regione delle zone per la mappa delle reputazioni.",
+        });
+        return NextResponse.json({ ok: true, report });
       }
 
       /* ---- Consulenti tecnici: iscrizioni ---- */

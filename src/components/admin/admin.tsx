@@ -635,6 +635,7 @@ function AdminSection({ section, data, onAction, reload }: {
               </tbody>
             </table>
           </div>
+          <ZoneGeoBackfill />
         </>
       );
     }
@@ -866,6 +867,93 @@ function AdminSection({ section, data, onAction, reload }: {
     default:
       return <div className="admin-head"><h1>Sezione non riconosciuta</h1></div>;
   }
+}
+
+/* ---------- Geografia delle città (mappa delle reputazioni) ---------- */
+type ZoneGeoReport = {
+  totale: number;
+  giaComplete: number;
+  completate: Array<{ id: string; name: string; province: string | null; region: string | null; via: "elenco" | "geocoder" }>;
+  nonRisolte: Array<{ id: string; name: string; motivo: string }>;
+  chiamateRete: number;
+};
+
+function ZoneGeoBackfill() {
+  const { toast } = useApp();
+  const [busy, setBusy] = useState(false);
+  const [report, setReport] = useState<ZoneGeoReport | null>(null);
+  return (
+    <div className="card card-pad-s mt3">
+      <h2 style={{ fontSize: "1.05rem" }}>Geografia delle città (mappa delle reputazioni)</h2>
+      <p className="small muted">
+        Le città del catalogo nate prima della copertura nazionale possono non avere provincia e
+        regione nei loro dati: senza questi campi la mappa delle reputazioni non può colorare
+        regioni e province, anche dove le recensioni ci sono tutte. Il pulsante completa solo i
+        campi mancanti — prima con l&apos;elenco interno dei capoluoghi, poi, per le altre città,
+        chiedendo al geocoder pubblico con le coordinate già note. Non tocca recensioni, schede
+        o altro.
+      </p>
+      <button
+        className="btn btn-primary"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          try {
+            const res = await api<{ report: ZoneGeoReport }>("/api/admin/action", {
+              body: { action: "zone.geoBackfill", reason: "Completamento geografia delle città." },
+            });
+            if (res.ok) {
+              setReport(res.report);
+              toast(res.report.completate.length
+                ? `Geografia completata per ${res.report.completate.length} città.`
+                : "Nessuna città da completare: la geografia è già a posto.", "ok");
+            } else {
+              toast(res.error, "err");
+            }
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        {busy ? "Attendi…" : "Completa provincia e regione delle città"}
+      </button>
+      {report ? (
+        <div className="mt2">
+          <p className="small mb1">
+            {report.completate.length ? <span className="pill pill-green">{report.completate.length} completate</span> : null}{" "}
+            {report.giaComplete ? <span className="pill pill-gray">{report.giaComplete} già complete</span> : null}{" "}
+            {report.nonRisolte.length ? <span className="pill pill-amber">{report.nonRisolte.length} non risolte</span> : null}{" "}
+            {report.chiamateRete ? <span className="pill pill-gray">{report.chiamateRete} al geocoder</span> : null}
+          </p>
+          {report.completate.length ? (
+            <div className="table-wrap">
+              <table className="table">
+                <caption className="sr-only">Città completate in questo giro</caption>
+                <thead>
+                  <tr><th scope="col">Città</th><th scope="col">Provincia</th><th scope="col">Regione</th><th scope="col">Fonte</th></tr>
+                </thead>
+                <tbody>
+                  {report.completate.map(z => (
+                    <tr key={z.id}>
+                      <td><b>{z.name}</b></td>
+                      <td>{z.province || "—"}</td>
+                      <td>{z.region || "—"}</td>
+                      <td className="small muted">{z.via === "elenco" ? "elenco capoluoghi" : "geocoder"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : null}
+          {report.nonRisolte.length ? (
+            <ul className="small muted mt1 mb0">
+              {report.nonRisolte.map(z => <li key={z.id}><b>{z.name}</b>: {z.motivo}</li>)}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 /* ---------- Sezione ruoli (componente separato: hook incondizionato) ---------- */
